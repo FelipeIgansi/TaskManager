@@ -12,6 +12,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.taskmananger.TaskEditViewModel
 import com.example.taskmananger.data.LocalTaskData
 import com.example.taskmananger.base.Routes
 
@@ -27,10 +30,21 @@ import com.example.taskmananger.base.Routes
 fun TaskEdit(
     padding: PaddingValues,
     navController: NavHostController,
-    localTaskData: LocalTaskData
+    localTaskData: LocalTaskData,
+    taskEditViewModel: TaskEditViewModel
 ) {
     var title by remember { mutableStateOf(localTaskData.get("title")) }
     var content by remember { mutableStateOf(localTaskData.get("content")) }
+    val isSaveRequested by taskEditViewModel.isSaveRequested.collectAsState()
+
+    LaunchedEffect(isSaveRequested) {
+        if (isSaveRequested) {
+            localTaskData.save("title", title)
+            localTaskData.save("content", content)
+            navController.navigate(Routes.TaskList.route)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,18 +65,7 @@ fun TaskEdit(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            maxLines = 5
+            maxLines = Int.MAX_VALUE
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
-            Button(onClick = {
-                localTaskData.save("title", title)
-                localTaskData.save("content", content)
-
-                navController.navigate(Routes.TaskList.route)
-            }) {
-                Text("Editar")
-            }
-        }
     }
 }

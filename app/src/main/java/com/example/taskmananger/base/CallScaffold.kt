@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import com.example.taskmananger.TaskAddViewModel
+import com.example.taskmananger.TaskEditViewModel
 import com.example.taskmananger.activity.TaskAdd
 import com.example.taskmananger.activity.TaskDetail
 import com.example.taskmananger.activity.TaskEdit
@@ -26,6 +27,7 @@ class CallScaffold(
     private val localTaskData: LocalTaskData
 ) {
     private val taskAddViewModel = TaskAddViewModel()
+    private val taskEditViewModel = TaskEditViewModel()
 
     @Composable
     fun buildScreen(screen: String): PaddingValues {
@@ -34,21 +36,15 @@ class CallScaffold(
                 when (screen) {
                     Routes.TaskDetail.route -> TaskDetailTopBar()
                     Routes.TaskAdd.route -> TaskAddTopBar()
-//                    Routes.TaskEdit.route -> TaskEditTopBar(localTaskData)
+                    Routes.TaskEdit.route -> TaskEditTopBar()
                     Routes.TaskList.route -> TaskListTopBar()
                 }
             }
         ) { padding ->
             when (screen) {
                 Routes.TaskDetail.route -> TaskDetail(padding, navController, localTaskData)
-                Routes.TaskAdd.route -> TaskAdd(
-                    padding,
-                    localTaskData,
-                    navController,
-                    taskAddViewModel
-                )
-
-                Routes.TaskEdit.route -> TaskEdit(padding, navController, localTaskData)
+                Routes.TaskAdd.route -> TaskAdd(padding, localTaskData, navController, taskAddViewModel)
+                Routes.TaskEdit.route -> TaskEdit(padding, navController, localTaskData, taskEditViewModel)
                 Routes.TaskList.route -> TaskList(padding, navController, localTaskData)
             }
         }
@@ -63,9 +59,22 @@ class CallScaffold(
         CenterAlignedTopAppBar(title = { Text(text = "Task Manager") })
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun TaskEditTopBar(localTaskData: LocalTaskData) {
-        TODO("Not yet implemented")
+    fun TaskEditTopBar() {
+        CenterAlignedTopAppBar(
+            title = { Text(text = "Criar de nota") },
+            actions = {
+                IconButton(onClick = { taskEditViewModel.setIsSaveRequest(true) }) {
+                    Icon(Icons.Default.Done, contentDescription = null, tint = Color.Green)
+                }
+            },
+            navigationIcon = {
+                IconButton(onClick = { taskEditViewModel.setIsSaveRequest(false) }) {
+                    Icon(Icons.Default.Close, contentDescription = null, tint = Color.Red)
+                }
+            }
+        )
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -73,7 +82,7 @@ class CallScaffold(
     fun TaskAddTopBar() {
 
         CenterAlignedTopAppBar(
-            title = { Text(text = "Criar de nota") },
+            title = { Text(text = "Editar nota") },
             actions = {
                 IconButton(onClick = { taskAddViewModel.setIsSaveRequest(true) }) {
                     Icon(Icons.Default.Done, contentDescription = null, tint = Color.Green)
