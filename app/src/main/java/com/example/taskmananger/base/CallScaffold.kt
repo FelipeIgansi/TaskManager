@@ -1,4 +1,4 @@
-package com.example.taskmananger
+package com.example.taskmananger.base
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -7,6 +7,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import com.example.taskmananger.activity.TaskAdd
+import com.example.taskmananger.activity.TaskDetail
+import com.example.taskmananger.activity.TaskEdit
+import com.example.taskmananger.activity.TaskList
+import com.example.taskmananger.data.LocalTaskData
 
 class CallScaffold(
     private val navController: NavHostController,

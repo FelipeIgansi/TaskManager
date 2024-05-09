@@ -1,6 +1,5 @@
-package com.example.taskmananger
+package com.example.taskmananger.activity
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,6 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.taskmananger.data.LocalTaskData
+import com.example.taskmananger.base.Routes
 
 @Composable
 fun TaskAdd(
