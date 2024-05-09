@@ -2,6 +2,7 @@ package com.example.taskmananger.base
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -10,7 +11,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
@@ -42,9 +42,21 @@ class CallScaffold(
             }
         ) { padding ->
             when (screen) {
-                Routes.TaskDetail.route -> TaskDetail(padding, navController, localTaskData)
-                Routes.TaskAdd.route -> TaskAdd(padding, localTaskData, navController, taskAddViewModel)
-                Routes.TaskEdit.route -> TaskEdit(padding, navController, localTaskData, taskEditViewModel)
+                Routes.TaskDetail.route -> TaskDetail(padding, localTaskData)
+                Routes.TaskAdd.route -> TaskAdd(
+                    padding,
+                    localTaskData,
+                    navController,
+                    taskAddViewModel
+                )
+
+                Routes.TaskEdit.route -> TaskEdit(
+                    padding,
+                    navController,
+                    localTaskData,
+                    taskEditViewModel
+                )
+
                 Routes.TaskList.route -> TaskList(padding, navController, localTaskData)
             }
         }
@@ -99,7 +111,14 @@ class CallScaffold(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun TaskDetailTopBar() {
-        TopAppBar(title = { Text(text = "Task mananger") })
+        CenterAlignedTopAppBar(
+            title = { Text(text = "Task manager") },
+            navigationIcon = {
+                IconButton(onClick = { navController.navigate(Routes.TaskList.route) }) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = null)
+                }
+            }
+        )
     }
 
 }

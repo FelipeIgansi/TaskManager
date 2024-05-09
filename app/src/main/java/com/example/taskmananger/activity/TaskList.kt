@@ -1,5 +1,6 @@
 package com.example.taskmananger.activity
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -49,6 +50,9 @@ fun TaskList(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 20.dp, top = 10.dp, end = 20.dp, bottom = 10.dp)
+                        .clickable {
+                            navController.navigate(Routes.TaskDetail.route)
+                        }
                 ) {
                     Text(text = title)
                     Row {
