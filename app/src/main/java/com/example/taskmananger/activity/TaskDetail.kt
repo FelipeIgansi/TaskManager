@@ -16,7 +16,11 @@ fun TaskDetail(
     navController: NavHostController,
     localTaskData: LocalTaskData
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+    ) {
         Text(text = localTaskData.get("title"))
         Text(text = localTaskData.get("content"), modifier = Modifier.weight(1f))
     }
