@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.taskmananger.Constants
 import com.example.taskmananger.data.LocalTaskData
 
 @Composable
@@ -26,13 +27,13 @@ fun TaskDetail(
             .padding(start = 10.dp, end = 10.dp)
     ) {
         Card (modifier = Modifier.fillMaxWidth()){
-            Text(text = localTaskData.get("title"), modifier = Modifier.padding(20.dp))
+            Text(text = localTaskData.get(Constants.TITLE), modifier = Modifier.padding(20.dp))
         }
         Spacer(modifier = Modifier.height(10.dp))
         Card(modifier = Modifier
             .fillMaxWidth()
             .weight(1f)) {
-            Text(text = localTaskData.get("content"), modifier = Modifier.padding(20.dp))
+            Text(text = localTaskData.get(Constants.CONTENT), modifier = Modifier.padding(20.dp))
         }
 
     }

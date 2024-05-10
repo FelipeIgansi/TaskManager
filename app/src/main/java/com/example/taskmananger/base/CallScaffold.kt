@@ -17,8 +17,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.taskmananger.R
-import com.example.taskmananger.TaskAddViewModel
-import com.example.taskmananger.TaskEditViewModel
+import com.example.taskmananger.activity.viewmodel.TaskAddViewModel
+import com.example.taskmananger.activity.viewmodel.TaskEditViewModel
 import com.example.taskmananger.activity.TaskAdd
 import com.example.taskmananger.activity.TaskDetail
 import com.example.taskmananger.activity.TaskEdit

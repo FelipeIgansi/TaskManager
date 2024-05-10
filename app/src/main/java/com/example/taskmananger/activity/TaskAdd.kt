@@ -19,7 +19,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.taskmananger.TaskAddViewModel
+import com.example.taskmananger.Constants
+import com.example.taskmananger.activity.viewmodel.TaskAddViewModel
 import com.example.taskmananger.base.Routes
 import com.example.taskmananger.data.LocalTaskData
 
@@ -39,12 +40,11 @@ fun TaskAdd(
 
     LaunchedEffect(isSaveRequested) {
         if (isSaveRequested) {
-            localTaskData.save("title", title)
-            localTaskData.save("content", content)
+            localTaskData.save(Constants.TITLE, title)
+            localTaskData.save(Constants.CONTENT, content)
             navController.navigate(Routes.TaskList.route)
         }
     }
-
 
     Column(
         modifier = Modifier

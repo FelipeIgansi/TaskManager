@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.taskmananger.Constants
 import com.example.taskmananger.data.LocalTaskData
 import com.example.taskmananger.base.Routes
 
@@ -35,12 +36,13 @@ fun TaskList(
     navController: NavHostController,
     localTaskData: LocalTaskData
 ) {
-    var title by remember { mutableStateOf(localTaskData.get("title")) }
+    var title by remember { mutableStateOf(localTaskData.get(Constants.TITLE)) }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(padding)
+            .padding(start = 10.dp, end = 10.dp)
     ) {
         if (title != "") {
             Card {
@@ -60,8 +62,8 @@ fun TaskList(
                             Icon(Icons.Default.Edit, contentDescription = null)
                         }
                         IconButton(onClick = {
-                            localTaskData.delete("title")
-                            localTaskData.delete("content")
+                            localTaskData.delete(Constants.TITLE)
+                            localTaskData.delete(Constants.CONTENT)
                             title = ""
                         }) {
                             Icon(Icons.Default.Delete, contentDescription = null)
@@ -69,6 +71,10 @@ fun TaskList(
                     }
 
                 }
+            }
+        }else{
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = "Não há notas cadastradas")
             }
         }
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
