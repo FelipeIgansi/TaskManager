@@ -3,109 +3,126 @@ package com.taskmanager.activity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.taskmanager.Constants
+import com.taskmanager.base.Constants
+import com.taskmanager.activity.viewmodel.TaskListViewModel
 import com.taskmanager.base.Routes
-import com.taskmanager.data.LocalTaskData
-import com.taskmanager.theme.DarkGreen
 
 @Composable
 fun TaskList(
-    padding: PaddingValues, navController: NavHostController, localTaskData: LocalTaskData
+    padding: PaddingValues,
+    navController: NavHostController,
+    listViewModel: TaskListViewModel
 ) {
-    var title by remember { mutableStateOf(localTaskData.get(Constants.TITLE)) }
-    var showAlertDialog by remember { mutableStateOf(false) }
+    val title by listViewModel.title.collectAsState()
+    val showAlertDialog by listViewModel.showAlertDialog.collectAsState()
 
+    Column(
+        modifier = Modifier
+            .padding(padding)
+            .fillMaxWidth()
+    ) {
+        if (showAlertDialog) {
+            AlertDialog(onDismissRequest = { listViewModel.setShowAlertDialor(false) },
+                confirmButton = {
+                    Button(onClick = {
+                        listViewModel.deleteTask()
+                    }) {
+                        Text(text = Constants.YES)
+                    }
+                },
+                dismissButton = {
+                    Button(onClick = { listViewModel.setShowAlertDialor(false) }) {
+                        Text(text = Constants.NO)
+                    }
+                },
+                text = { Text(text = Constants.CONFIRMAREXCLUSAO) }
+            )
+        }
+        if (title != "") {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .clickable {
+                        listViewModel.navigate(
+                            Routes.TaskDetail.route,
+                            navController
+                        )
+                    }
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = title ?: "",
+                        modifier = Modifier.padding(
+                            start = 20.dp,
+                            end = 20.dp,
+                            top = 10.dp,
+                            bottom = 10.dp
+                        )
+                    )
+                    Box(modifier = Modifier) {
+                        Row {
+                            IconButton(onClick = { listViewModel.setShowAlertDialor(true) }) {
+                                Icon(Icons.Default.Delete, contentDescription = null)
+                            }
+                            IconButton(onClick = {
+                                listViewModel.navigate(Routes.TaskEdit.route, navController)
+                            }) {
+                                Icon(Icons.Default.Edit, contentDescription = null)
+                            }
+                        }
+
+                    }
+                }
+
+            }
+        } else {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = Constants.SEMREGISTROMSG)
+            }
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(padding)
-            .padding(start = 10.dp, end = 10.dp)
+            .padding(10.dp),
+        contentAlignment = Alignment.BottomEnd
     ) {
-        if (showAlertDialog) {
-            AlertDialog(text = { Text(text = "Deseja realmente excluir a nota?") },
-                onDismissRequest = { },
-                dismissButton = {
-                    Button(
-                        onClick = { }, colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = Color.Red, contentColor = Color.White
-                        )
-                    ) {
-                        Text(text = "Não")
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            localTaskData.delete(Constants.TITLE)
-                            localTaskData.delete(Constants.CONTENT)
-                            title = ""
-                            showAlertDialog = false
-                        }, colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = DarkGreen, contentColor = Color.White
-                        )
-                    ) {
-                        Text(text = "Sim")
-                    }
-                })
-        }
-        if (title != "") {
-            Card {
-                Row(horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, top = 10.dp, end = 20.dp, bottom = 10.dp)
-                        .clickable {
-                            navController.navigate(Routes.TaskDetail.route)
-                        }) {
-                    Text(text = title)
-                    Row {
-                        IconButton(onClick = { navController.navigate(Routes.TaskEdit.route) }) {
-                            Icon(Icons.Default.Edit, contentDescription = null)
-                        }
-                        IconButton(onClick = { showAlertDialog = true }) {
-                            Icon(Icons.Default.Delete, contentDescription = null)
-                        }
-                    }
-
-                }
-            }
-        } else {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "Não há notas cadastradas")
-            }
-        }
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
-            FloatingActionButton(onClick = { navController.navigate(Routes.TaskAdd.route) }) {
-                Icon(Icons.Default.Add, contentDescription = null)
-            }
+        FloatingActionButton(onClick = {
+            listViewModel.navigate(
+                Routes.TaskAdd.route,
+                navController
+            )
+        }) {
+            Text(text = "+")
         }
     }
+
 }
