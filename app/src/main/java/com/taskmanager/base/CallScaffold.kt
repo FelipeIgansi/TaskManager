@@ -21,15 +21,19 @@ import com.taskmanager.activity.TaskDetail
 import com.taskmanager.activity.TaskEdit
 import com.taskmanager.activity.TaskList
 import com.taskmanager.activity.viewmodel.TaskAddViewModel
+import com.taskmanager.activity.viewmodel.TaskDetailViewModel
 import com.taskmanager.activity.viewmodel.TaskEditViewModel
+import com.taskmanager.activity.viewmodel.TaskListViewModel
 import com.taskmanager.data.LocalTaskData
 
 class CallScaffold(
     private val navController: NavHostController,
-    private val localTaskData: LocalTaskData
+    localTaskData: LocalTaskData
 ) {
-    private val taskAddViewModel = TaskAddViewModel()
-    private val taskEditViewModel = TaskEditViewModel()
+    private val taskAddViewModel = TaskAddViewModel(navController = navController, localData = localTaskData)
+    private val taskEditViewModel = TaskEditViewModel(localData = localTaskData, navController = navController)
+    private val taskListViewModel = TaskListViewModel(localData = localTaskData)
+    private val detailViewModel = TaskDetailViewModel(localData = localTaskData)
 
     @Composable
     fun buildScreen(screen: String): PaddingValues {
@@ -44,22 +48,10 @@ class CallScaffold(
             }
         ) { padding ->
             when (screen) {
-                Routes.TaskDetail.route -> TaskDetail(padding, localTaskData)
-                Routes.TaskAdd.route -> TaskAdd(
-                    padding,
-                    localTaskData,
-                    navController,
-                    taskAddViewModel
-                )
-
-                Routes.TaskEdit.route -> TaskEdit(
-                    padding,
-                    navController,
-                    localTaskData,
-                    taskEditViewModel
-                )
-
-                Routes.TaskList.route -> TaskList(padding, navController, localTaskData)
+                Routes.TaskDetail.route -> TaskDetail(padding, detailViewModel)
+                Routes.TaskAdd.route -> TaskAdd(padding, taskAddViewModel)
+                Routes.TaskEdit.route -> TaskEdit(padding, taskEditViewModel)
+                Routes.TaskList.route -> TaskList(padding, navController, taskListViewModel)
             }
         }
 
@@ -70,16 +62,18 @@ class CallScaffold(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun TaskListTopBar() {
-        CenterAlignedTopAppBar(title = { Text(text = "Task Manager") })
+        CenterAlignedTopAppBar(
+            title = { Text(text = Constants.LISTTASKTEXT) }
+        )
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun TaskEditTopBar() {
         CenterAlignedTopAppBar(
-            title = { Text(text = "Editar nota") },
+            title = { Text(text = Constants.EDITTASKTEXT) },
             actions = {
-                IconButton(onClick = { taskEditViewModel.setIsSaveRequest(true) }) {
+                IconButton(onClick = { taskEditViewModel.setSaveRequest(true) }) {
                     Icon(
                         Icons.Default.Done,
                         contentDescription = null,
@@ -101,9 +95,9 @@ class CallScaffold(
     fun TaskAddTopBar() {
 
         CenterAlignedTopAppBar(
-            title = { Text(text = "Criar de nota") },
-            actions = {
-                IconButton(onClick = { taskAddViewModel.setIsSaveRequest(true) }) {
+            title = { Text(text = Constants.CREATETASKTEXT) },
+                actions = {
+                IconButton(onClick = { taskAddViewModel.setSaveRequest(true) }) {
                     Icon(
                         Icons.Default.Done,
                         contentDescription = null,
@@ -124,7 +118,7 @@ class CallScaffold(
     @Composable
     fun TaskDetailTopBar() {
         CenterAlignedTopAppBar(
-            title = { Text(text = "Task manager") },
+            title = { Text(text = Constants.DETAILTASKTEXT) },
             navigationIcon = {
                 IconButton(onClick = { navController.navigate(Routes.TaskList.route) }) {
                     Icon(Icons.Default.ArrowBack, contentDescription = null)
