@@ -1,4 +1,4 @@
-package com.example.taskmananger.activity
+package com.taskmanager.activity
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,8 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.taskmananger.Constants
-import com.example.taskmananger.data.LocalTaskData
+import com.taskmanager.Constants
+import com.taskmanager.data.LocalTaskData
 
 @Composable
 fun TaskDetail(

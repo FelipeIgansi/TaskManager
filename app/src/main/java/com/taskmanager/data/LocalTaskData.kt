@@ -1,4 +1,4 @@
-package com.example.taskmananger.data
+package com.taskmanager.data
 
 import android.content.Context
 import android.content.SharedPreferences

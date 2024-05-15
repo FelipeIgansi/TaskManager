@@ -1,4 +1,4 @@
-package com.example.taskmananger
+package com.taskmanager
 
 class Constants {
     companion object{

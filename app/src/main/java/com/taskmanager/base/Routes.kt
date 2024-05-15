@@ -1,4 +1,4 @@
-package com.example.taskmananger.base
+package com.taskmanager.base
 
 sealed class Routes (val route: String) {
     data object TaskList : Routes("task_list")

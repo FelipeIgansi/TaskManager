@@ -1,4 +1,4 @@
-package com.example.taskmananger.activity
+package com.taskmanager.activity
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,22 +18,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.example.taskmananger.Constants
-import com.example.taskmananger.activity.viewmodel.TaskEditViewModel
-import com.example.taskmananger.data.LocalTaskData
-import com.example.taskmananger.base.Routes
+import androidx.navigation.NavController
+import com.taskmanager.Constants
+import com.taskmanager.activity.viewmodel.TaskAddViewModel
+import com.taskmanager.base.Routes
+import com.taskmanager.data.LocalTaskData
+
 
 @Composable
-fun TaskEdit(
+fun TaskAdd(
     padding: PaddingValues,
-    navController: NavHostController,
     localTaskData: LocalTaskData,
-    taskEditViewModel: TaskEditViewModel
+    navController: NavController,
+    taskAddViewModel: TaskAddViewModel
 ) {
-    var title by remember { mutableStateOf(localTaskData.get(Constants.TITLE)) }
-    var content by remember { mutableStateOf(localTaskData.get(Constants.CONTENT)) }
-    val isSaveRequested by taskEditViewModel.isSaveRequested.collectAsState()
+
+    var title by remember { mutableStateOf("") }
+    var content by remember { mutableStateOf("") }
+    val isSaveRequested by taskAddViewModel.isSaveRequested.collectAsState()
+
 
     LaunchedEffect(isSaveRequested) {
         if (isSaveRequested) {
@@ -63,7 +66,8 @@ fun TaskEdit(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            maxLines = Int.MAX_VALUE
+            maxLines = 5
         )
     }
 }
+

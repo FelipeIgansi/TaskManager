@@ -1,18 +1,18 @@
-package com.example.taskmananger.activity
+package com.taskmanager.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.taskmananger.base.Navigation
-import com.example.taskmananger.ui.theme.TaskManangerTheme
+import com.taskmanager.base.Navigation
+import com.taskmanager.theme.TaskManagerTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            TaskManangerTheme {
+            TaskManagerTheme {
                 Navigation().Create()
             }
         }

@@ -1,4 +1,4 @@
-package com.example.taskmananger.base
+package com.taskmanager.base
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -7,7 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.taskmananger.data.LocalTaskData
+import com.taskmanager.data.LocalTaskData
 
 class Navigation {
     private lateinit var navController: NavHostController

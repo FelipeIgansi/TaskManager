@@ -1,9 +1,10 @@
-package com.example.taskmananger.base
+package com.taskmanager.base
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -13,17 +14,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.taskmananger.R
-import com.example.taskmananger.activity.viewmodel.TaskAddViewModel
-import com.example.taskmananger.activity.viewmodel.TaskEditViewModel
-import com.example.taskmananger.activity.TaskAdd
-import com.example.taskmananger.activity.TaskDetail
-import com.example.taskmananger.activity.TaskEdit
-import com.example.taskmananger.activity.TaskList
-import com.example.taskmananger.data.LocalTaskData
+import com.taskmanager.activity.TaskAdd
+import com.taskmanager.activity.TaskDetail
+import com.taskmanager.activity.TaskEdit
+import com.taskmanager.activity.TaskList
+import com.taskmanager.activity.viewmodel.TaskAddViewModel
+import com.taskmanager.activity.viewmodel.TaskEditViewModel
+import com.taskmanager.data.LocalTaskData
 
 class CallScaffold(
     private val navController: NavHostController,
@@ -82,7 +81,7 @@ class CallScaffold(
             actions = {
                 IconButton(onClick = { taskEditViewModel.setIsSaveRequest(true) }) {
                     Icon(
-                        painterResource(id = R.drawable.save),
+                        Icons.Default.Done,
                         contentDescription = null,
                         tint = Color.Green,
                         modifier = Modifier.size(25.dp)
@@ -106,7 +105,7 @@ class CallScaffold(
             actions = {
                 IconButton(onClick = { taskAddViewModel.setIsSaveRequest(true) }) {
                     Icon(
-                        painterResource(id = R.drawable.save),
+                        Icons.Default.Done,
                         contentDescription = null,
                         tint = Color.Green,
                         modifier = Modifier.size(25.dp)
