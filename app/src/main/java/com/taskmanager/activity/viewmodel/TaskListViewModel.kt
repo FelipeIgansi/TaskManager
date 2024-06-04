@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 class TaskListViewModel(private val localData: LocalTaskData) : ViewModel() {
 
     private var _title = MutableStateFlow(localData.get(Constants.TITLE_KEY))
-    val title: StateFlow<String?> = _title
+    val title: StateFlow<String> = _title
 
     private var _showAlertDialog = MutableStateFlow(false)
     val showAlertDialog: StateFlow<Boolean> = _showAlertDialog
@@ -22,7 +22,7 @@ class TaskListViewModel(private val localData: LocalTaskData) : ViewModel() {
         _showAlertDialog.value = false
     }
 
-    fun setShowAlertDialor(value: Boolean) {
+    fun setShowAlertDialog(value: Boolean) {
         _showAlertDialog.value = value
     }
 

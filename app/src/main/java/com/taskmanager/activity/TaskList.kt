@@ -45,7 +45,7 @@ fun TaskList(
             .fillMaxWidth()
     ) {
         if (showAlertDialog) {
-            AlertDialog(onDismissRequest = { listViewModel.setShowAlertDialor(false) },
+            AlertDialog(onDismissRequest = { listViewModel.setShowAlertDialog(false) },
                 confirmButton = {
                     Button(onClick = {
                         listViewModel.deleteTask()
@@ -54,7 +54,7 @@ fun TaskList(
                     }
                 },
                 dismissButton = {
-                    Button(onClick = { listViewModel.setShowAlertDialor(false) }) {
+                    Button(onClick = { listViewModel.setShowAlertDialog(false) }) {
                         Text(text = Constants.NO)
                     }
                 },
@@ -88,7 +88,7 @@ fun TaskList(
                     )
                     Box(modifier = Modifier) {
                         Row {
-                            IconButton(onClick = { listViewModel.setShowAlertDialor(true) }) {
+                            IconButton(onClick = { listViewModel.setShowAlertDialog(true) }) {
                                 Icon(Icons.Default.Delete, contentDescription = null)
                             }
                             IconButton(onClick = {
