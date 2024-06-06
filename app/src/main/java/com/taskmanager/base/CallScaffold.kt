@@ -3,7 +3,7 @@ package com.taskmanager.base
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,14 +25,24 @@ import com.taskmanager.activity.viewmodel.TaskDetailViewModel
 import com.taskmanager.activity.viewmodel.TaskEditViewModel
 import com.taskmanager.activity.viewmodel.TaskListViewModel
 import com.taskmanager.data.LocalTaskData
+import com.taskmanager.data.TaskDatabase
 
 class CallScaffold(
     private val navController: NavHostController,
-    localTaskData: LocalTaskData
+    localTaskData: LocalTaskData,
+    localdb: TaskDatabase
 ) {
-    private val taskAddViewModel = TaskAddViewModel(navController = navController, localData = localTaskData)
-    private val taskEditViewModel = TaskEditViewModel(localData = localTaskData, navController = navController)
-    private val taskListViewModel = TaskListViewModel(localData = localTaskData)
+    private val taskAddViewModel = TaskAddViewModel(
+        navController = navController,
+        localData = localTaskData,
+        localDB = localdb
+    )
+    private val taskEditViewModel = TaskEditViewModel(
+        navController = navController,
+        localData = localTaskData,
+        localDB = localdb
+    )
+    private val taskListViewModel = TaskListViewModel(localData = localTaskData, localDB = localdb)
     private val detailViewModel = TaskDetailViewModel(localData = localTaskData)
 
     @Composable
@@ -84,7 +94,7 @@ class CallScaffold(
             },
             navigationIcon = {
                 IconButton(onClick = { navController.navigate(Routes.TaskList.route) }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = null)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                 }
             }
         )
@@ -96,7 +106,7 @@ class CallScaffold(
 
         CenterAlignedTopAppBar(
             title = { Text(text = Constants.CREATETASKTEXT) },
-                actions = {
+            actions = {
                 IconButton(onClick = { taskAddViewModel.setSaveRequest(true) }) {
                     Icon(
                         Icons.Default.Done,
@@ -108,7 +118,7 @@ class CallScaffold(
             },
             navigationIcon = {
                 IconButton(onClick = { navController.navigate(Routes.TaskList.route) }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = null)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                 }
             }
         )
@@ -121,7 +131,7 @@ class CallScaffold(
             title = { Text(text = Constants.DETAILTASKTEXT) },
             navigationIcon = {
                 IconButton(onClick = { navController.navigate(Routes.TaskList.route) }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = null)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                 }
             }
         )
