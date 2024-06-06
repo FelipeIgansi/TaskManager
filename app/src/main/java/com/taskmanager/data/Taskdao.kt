@@ -8,14 +8,14 @@ import androidx.room.Update
 @Dao
 interface Taskdao {
     @Insert
-    fun insertAll ( vararg taskEntity: TaskEntity)
+    suspend fun insertAll ( vararg taskEntity: TaskEntity)
 
     @Update
-    fun update (taskEntity: TaskEntity)
+    suspend fun update (taskEntity: TaskEntity)
 
     @Delete
-    fun delete (taskEntity: TaskEntity)
+    suspend fun delete (taskEntity: TaskEntity)
 
     @Query("SELECT * From taskEntity")
-    fun getAll(): List<TaskEntity>
+    suspend fun getAll(): MutableList<TaskEntity>
 }
