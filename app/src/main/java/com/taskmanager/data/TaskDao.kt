@@ -18,4 +18,7 @@ interface Taskdao {
 
     @Query("SELECT * From taskEntity")
     suspend fun getAll(): MutableList<TaskEntity>
+
+    @Query("SELECT * From taskEntity where id like(:id)")
+    suspend fun getByID(id: Long): TaskEntity
 }

@@ -103,7 +103,10 @@ fun TaskList(
                                         }) {
                                             Icon(Icons.Default.Delete, contentDescription = null)
                                         }
-                                        IconButton(onClick = { navController.navigate(Routes.TaskEdit.route) }) {
+                                        IconButton(onClick = {
+                                            localTaskData.saveID(Constants.TASK_KEY, task.id)
+                                            navController.navigate(Routes.TaskEdit.route)
+                                        }) {
                                             Icon(Icons.Default.Edit, contentDescription = null)
                                         }
                                     }

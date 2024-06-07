@@ -16,5 +16,7 @@ class Constants {
         const val DETAILTASKTEXT = "Detalhes da nota"
         const val CREATETASKTEXT = "Criação de notas"
         const val LISTTASKTEXT = "Minhas notas"
+
+        const val  TASK_KEY = "task_key"
     }
 }

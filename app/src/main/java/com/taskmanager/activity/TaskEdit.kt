@@ -20,6 +20,9 @@ fun TaskEdit(
     padding: PaddingValues,
     taskEditViewModel: TaskEditViewModel
 ) {
+
+    LaunchedEffect(key1 = taskEditViewModel.task) { taskEditViewModel.loadTask() }
+
     val title by taskEditViewModel.title.collectAsState()
     val description by taskEditViewModel.description.collectAsState()
     val isSaveRequest by taskEditViewModel.isSaveRequest.collectAsState()
