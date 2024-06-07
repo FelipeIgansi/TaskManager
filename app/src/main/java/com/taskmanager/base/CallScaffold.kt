@@ -43,7 +43,7 @@ class CallScaffold(
         localDB = localdb
     )
     private val taskListViewModel = TaskListViewModel(localDB = localdb)
-    private val detailViewModel = TaskDetailViewModel(localData = localTaskData)
+    private val detailViewModel = TaskDetailViewModel(localData = localTaskData, localDB = localdb)
 
     @Composable
     fun buildScreen(screen: String): PaddingValues {

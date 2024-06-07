@@ -80,7 +80,10 @@ fun TaskList(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(10.dp)
-                                .clickable { navController.navigate(Routes.TaskDetail.route) }
+                                .clickable {
+                                    localTaskData.saveID(Constants.TASK_KEY, task.id)
+                                    navController.navigate(Routes.TaskDetail.route)
+                                }
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
