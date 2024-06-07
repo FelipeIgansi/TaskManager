@@ -5,12 +5,14 @@ import androidx.navigation.NavController
 import com.taskmanager.base.Constants
 import com.taskmanager.base.Routes
 import com.taskmanager.data.LocalTaskData
+import com.taskmanager.data.TaskDatabase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class TaskEditViewModel(
     private val navController: NavController,
-    private val localData: LocalTaskData
+    private val localData: LocalTaskData,
+    private val localDB: TaskDatabase
 ) : ViewModel() {
 
     private var _title = MutableStateFlow(localData.get(Constants.TITLE_KEY))

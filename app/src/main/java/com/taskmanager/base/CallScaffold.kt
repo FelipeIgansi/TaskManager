@@ -29,7 +29,7 @@ import com.taskmanager.data.TaskDatabase
 
 class CallScaffold(
     private val navController: NavHostController,
-    localTaskData: LocalTaskData,
+    private val localTaskData: LocalTaskData,
     localdb: TaskDatabase
 ) {
     private val taskAddViewModel = TaskAddViewModel(
@@ -42,7 +42,7 @@ class CallScaffold(
         localData = localTaskData,
         localDB = localdb
     )
-    private val taskListViewModel = TaskListViewModel(localData = localTaskData, localDB = localdb)
+    private val taskListViewModel = TaskListViewModel(localDB = localdb)
     private val detailViewModel = TaskDetailViewModel(localData = localTaskData)
 
     @Composable
@@ -61,7 +61,12 @@ class CallScaffold(
                 Routes.TaskDetail.route -> TaskDetail(padding, detailViewModel)
                 Routes.TaskAdd.route -> TaskAdd(padding, taskAddViewModel)
                 Routes.TaskEdit.route -> TaskEdit(padding, taskEditViewModel)
-                Routes.TaskList.route -> TaskList(padding, navController, taskListViewModel)
+                Routes.TaskList.route -> TaskList(
+                    padding = padding,
+                    navController = navController,
+                    listViewModel = taskListViewModel,
+                    localTaskData = localTaskData
+                )
             }
         }
 

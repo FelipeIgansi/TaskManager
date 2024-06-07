@@ -24,6 +24,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -31,18 +34,21 @@ import androidx.navigation.NavHostController
 import com.taskmanager.activity.viewmodel.TaskListViewModel
 import com.taskmanager.base.Constants
 import com.taskmanager.base.Routes
+import com.taskmanager.data.LocalTaskData
+import com.taskmanager.data.TaskEntity
 
 @Composable
 fun TaskList(
     padding: PaddingValues,
     navController: NavHostController,
-    listViewModel: TaskListViewModel
+    listViewModel: TaskListViewModel,
+    localTaskData: LocalTaskData
 ) {
 
-    LaunchedEffect(key1 = Unit) { listViewModel.loadTasks() }
-//    val title by listViewModel.title.collectAsState()
+    LaunchedEffect(key1 = listViewModel.tasks) { listViewModel.loadTasks() }
     val tasks by listViewModel.tasks.collectAsState()
     val showAlertDialog by listViewModel.showAlertDialog.collectAsState()
+    var selectItem by remember { mutableStateOf(TaskEntity()) }
 
     Column(
         modifier = Modifier
@@ -53,7 +59,7 @@ fun TaskList(
             AlertDialog(onDismissRequest = { listViewModel.setShowAlertDialog(false) },
                 confirmButton = {
                     Button(onClick = {
-                        listViewModel.deleteTask()
+                        listViewModel.deleteTask(selectItem)
                     }) {
                         Text(text = Constants.YES)
                     }
@@ -74,12 +80,7 @@ fun TaskList(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(10.dp)
-                                .clickable {
-                                    listViewModel.navigate(
-                                        Routes.TaskDetail.route,
-                                        navController
-                                    )
-                                }
+                                .clickable { navController.navigate(Routes.TaskDetail.route) }
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -96,22 +97,18 @@ fun TaskList(
                                 )
                                 Box(modifier = Modifier) {
                                     Row {
-                                        IconButton(onClick = { listViewModel.setShowAlertDialog(true) }) {
+                                        IconButton(onClick = {
+                                            selectItem = task
+                                            listViewModel.setShowAlertDialog(true)
+                                        }) {
                                             Icon(Icons.Default.Delete, contentDescription = null)
                                         }
-                                        IconButton(onClick = {
-                                            listViewModel.navigate(
-                                                Routes.TaskEdit.route,
-                                                navController
-                                            )
-                                        }) {
+                                        IconButton(onClick = { navController.navigate(Routes.TaskEdit.route) }) {
                                             Icon(Icons.Default.Edit, contentDescription = null)
                                         }
                                     }
-
                                 }
                             }
-
                         }
                     }
                 }
@@ -130,12 +127,7 @@ fun TaskList(
             .padding(10.dp),
         contentAlignment = Alignment.BottomEnd
     ) {
-        FloatingActionButton(onClick = {
-            listViewModel.navigate(
-                Routes.TaskAdd.route,
-                navController
-            )
-        }) {
+        FloatingActionButton(onClick = { navController.navigate(Routes.TaskAdd.route) }) {
             Text(text = "+")
         }
     }
