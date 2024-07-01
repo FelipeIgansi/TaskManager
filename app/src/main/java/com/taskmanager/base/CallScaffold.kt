@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.taskmanager.activity.TaskAdd
 import com.taskmanager.activity.TaskDetail
@@ -32,33 +33,23 @@ class CallScaffold(
     private val localTaskData: LocalTaskData,
     localdb: TaskDatabase
 ) {
-    private val taskAddViewModel = TaskAddViewModel(
-        navController = navController,
-        localData = localTaskData,
-        localDB = localdb
-    )
-    private val taskEditViewModel = TaskEditViewModel(
-        navController = navController,
-        localData = localTaskData,
-        localDB = localdb
-    )
-    private val taskListViewModel = TaskListViewModel(localDB = localdb)
-    private val detailViewModel = TaskDetailViewModel(localData = localTaskData, localDB = localdb)
+    private val taskAddViewModel by lazy { TaskAddViewModel(navController = navController, localDB = localdb) }
+    private val taskEditViewModel by lazy { TaskEditViewModel(navController = navController, localData = localTaskData, localDB = localdb) }
+    private val taskListViewModel by lazy { TaskListViewModel(localDB = localdb) }
+    private val taskdetailViewModel by lazy {TaskDetailViewModel(localData = localTaskData, localDB = localdb) }
 
     @Composable
     fun buildScreen(screen: String): PaddingValues {
-        Scaffold(
-            topBar = {
-                when (screen) {
-                    Routes.TaskDetail.route -> TaskDetailTopBar()
-                    Routes.TaskAdd.route -> TaskAddTopBar()
-                    Routes.TaskEdit.route -> TaskEditTopBar()
-                    Routes.TaskList.route -> TaskListTopBar()
-                }
-            }
-        ) { padding ->
+        val viewModel = when (screen) {
+            Routes.TaskDetail.route -> taskdetailViewModel
+            Routes.TaskAdd.route -> taskAddViewModel
+            Routes.TaskEdit.route -> taskEditViewModel
+            Routes.TaskList.route -> taskListViewModel
+            else -> throw IllegalArgumentException(" Não foi encontrada a tela $screen")
+        }
+        Scaffold(topBar = { CustomTopAppBar(screen = screen, viewModel = viewModel) }) { padding ->
             when (screen) {
-                Routes.TaskDetail.route -> TaskDetail(padding, detailViewModel)
+                Routes.TaskDetail.route -> TaskDetail(padding, taskdetailViewModel)
                 Routes.TaskAdd.route -> TaskAdd(padding, taskAddViewModel)
                 Routes.TaskEdit.route -> TaskEdit(padding, taskEditViewModel)
                 Routes.TaskList.route -> TaskList(
@@ -76,70 +67,40 @@ class CallScaffold(
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun TaskListTopBar() {
-        CenterAlignedTopAppBar(
-            title = { Text(text = Constants.LISTTASKTEXT) }
-        )
-    }
+    fun CustomTopAppBar(screen: String, viewModel: ViewModel) {
+        val title = when (screen) {
+            Routes.TaskAdd.route -> Constants.CREATETASKTEXT
+            Routes.TaskEdit.route -> Constants.EDITTASKTEXT
+            Routes.TaskList.route -> Constants.LISTTASKTEXT
+            Routes.TaskDetail.route -> Constants.DETAILTASKTEXT
+            else -> ""
+        }
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun TaskEditTopBar() {
-        CenterAlignedTopAppBar(
-            title = { Text(text = Constants.EDITTASKTEXT) },
+        CenterAlignedTopAppBar(title = { Text(text = title) },
             actions = {
-                IconButton(onClick = { taskEditViewModel.setSaveRequest(true) }) {
-                    Icon(
-                        Icons.Default.Done,
-                        contentDescription = null,
-                        tint = Color.Green,
-                        modifier = Modifier.size(25.dp)
-                    )
+                when (viewModel) {
+                    is TaskAddViewModel -> ButtonSave(onSaveClick = { taskAddViewModel.setSaveRequest(true) })
+                    is TaskEditViewModel -> ButtonSave(onSaveClick = { taskEditViewModel.setSaveRequest(true) })
                 }
             },
             navigationIcon = {
-                IconButton(onClick = { navController.navigate(Routes.TaskList.route) }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                if (viewModel !is TaskListViewModel) {
+                    IconButton(onClick = { navController.navigate(Routes.TaskList.route) }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                    }
                 }
-            }
-        )
+            })
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun TaskAddTopBar() {
-
-        CenterAlignedTopAppBar(
-            title = { Text(text = Constants.CREATETASKTEXT) },
-            actions = {
-                IconButton(onClick = { taskAddViewModel.setSaveRequest(true) }) {
-                    Icon(
-                        Icons.Default.Done,
-                        contentDescription = null,
-                        tint = Color.Green,
-                        modifier = Modifier.size(25.dp)
-                    )
-                }
-            },
-            navigationIcon = {
-                IconButton(onClick = { navController.navigate(Routes.TaskList.route) }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                }
-            }
-        )
+    fun ButtonSave(onSaveClick: () -> Unit) {
+        IconButton(onClick = onSaveClick) {
+            Icon(
+                Icons.Default.Done,
+                contentDescription = null,
+                tint = Color.Green,
+                modifier = Modifier.size(25.dp)
+            )
+        }
     }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun TaskDetailTopBar() {
-        CenterAlignedTopAppBar(
-            title = { Text(text = Constants.DETAILTASKTEXT) },
-            navigationIcon = {
-                IconButton(onClick = { navController.navigate(Routes.TaskList.route) }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                }
-            }
-        )
-    }
-
 }

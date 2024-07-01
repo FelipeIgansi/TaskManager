@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.taskmanager.base.Routes
-import com.taskmanager.data.LocalTaskData
 import com.taskmanager.data.TaskDatabase
 import com.taskmanager.data.TaskEntity
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +12,6 @@ import kotlinx.coroutines.launch
 
 class TaskAddViewModel(
     private val navController: NavController,
-    private val localData: LocalTaskData,
     private val localDB: TaskDatabase
 ) : ViewModel() {
 
