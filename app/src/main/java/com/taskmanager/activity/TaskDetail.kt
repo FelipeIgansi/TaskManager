@@ -25,7 +25,7 @@ fun TaskDetail(
     LaunchedEffect(key1 = detailViewModel.task) { detailViewModel.loadTask() }
 
     val title by detailViewModel.title.collectAsState()
-    val description by detailViewModel.description.collectAsState()
+    val content by detailViewModel.content.collectAsState()
     Column(
         modifier = Modifier
             .padding(padding)
@@ -40,7 +40,7 @@ fun TaskDetail(
         Card (modifier = Modifier
             .weight(1f)
             .fillMaxWidth()){
-            Text(text = description, modifier = Modifier.padding(10.dp))
+            Text(text = content, modifier = Modifier.padding(10.dp))
         }
 
     }

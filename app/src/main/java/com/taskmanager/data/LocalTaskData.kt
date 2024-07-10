@@ -2,6 +2,7 @@ package com.taskmanager.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.taskmanager.base.Constants
 
 /**
  * Acesso a dados rápidos do projeto - SharedPreferences
@@ -9,11 +10,8 @@ import android.content.SharedPreferences
 class LocalTaskData(context: Context) {
 
     private val preferences: SharedPreferences =
-        context.getSharedPreferences("locataskdata", Context.MODE_PRIVATE)
+        context.getSharedPreferences(Constants.DATABASE.SHAREDPREFERENCESNAME, Context.MODE_PRIVATE)
 
-    fun save(key: String, value: String) {
-        preferences.edit().putString(key, value).apply()
-    }
 
     fun saveID(key: String, value : Long){
         preferences.edit().putLong(key, value).apply()

@@ -23,7 +23,7 @@ fun TaskAdd(
 ) {
 
     val title by taskAddViewModel.title.collectAsState()
-    val description by taskAddViewModel.description.collectAsState()
+    val content by taskAddViewModel.content.collectAsState()
     val saveRequest by taskAddViewModel.isSaveRequest.collectAsState()
 
     LaunchedEffect(saveRequest) { if (saveRequest) taskAddViewModel.createTask() }
@@ -40,8 +40,8 @@ fun TaskAdd(
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
-            value = description?:"",
-            onValueChange = { taskAddViewModel.setDescription(it)},
+            value = content?:"",
+            onValueChange = { taskAddViewModel.setContent(it)},
             label = { Text(Constants.DESCRIPTION) },
             modifier = Modifier
                 .fillMaxWidth()

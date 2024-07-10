@@ -61,15 +61,15 @@ fun TaskList(
                     Button(onClick = {
                         listViewModel.deleteTask(selectItem)
                     }) {
-                        Text(text = Constants.YES)
+                        Text(text = Constants.ALERTDIALOG.YES)
                     }
                 },
                 dismissButton = {
                     Button(onClick = { listViewModel.setShowAlertDialog(false) }) {
-                        Text(text = Constants.NO)
+                        Text(text = Constants.ALERTDIALOG.NO)
                     }
                 },
-                text = { Text(text = Constants.CONFIRMAREXCLUSAO) }
+                text = { Text(text = Constants.ALERTDIALOG.CONFIRMAREXCLUSAO) }
             )
         }
         if (tasks.isNotEmpty()) {

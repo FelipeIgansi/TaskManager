@@ -24,7 +24,7 @@ fun TaskEdit(
     LaunchedEffect(key1 = taskEditViewModel.task) { taskEditViewModel.loadTask() }
 
     val title by taskEditViewModel.title.collectAsState()
-    val description by taskEditViewModel.description.collectAsState()
+    val content by taskEditViewModel.content.collectAsState()
     val isSaveRequest by taskEditViewModel.isSaveRequest.collectAsState()
 
     LaunchedEffect(isSaveRequest) { if (isSaveRequest) taskEditViewModel.editarTask() }
@@ -41,8 +41,8 @@ fun TaskEdit(
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
-            value = description,
-            onValueChange = { taskEditViewModel.setDescription(it) },
+            value = content,
+            onValueChange = { taskEditViewModel.setContent(it) },
             label = { Text(Constants.DESCRIPTION) },
             modifier = Modifier
                 .fillMaxWidth()

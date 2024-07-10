@@ -19,7 +19,7 @@ class TaskAddViewModel(
     val title: StateFlow<String?> = _title
 
     private var _content = MutableStateFlow("")
-    val description: StateFlow<String?> = _content
+    val content: StateFlow<String?> = _content
 
     private var _isSaveRequest = MutableStateFlow(false)
     val isSaveRequest: StateFlow<Boolean> = _isSaveRequest
@@ -44,7 +44,7 @@ class TaskAddViewModel(
         _title.value = title
     }
 
-    fun setDescription(description: String) {
-        _content.value = description
+    fun setContent(content: String) {
+        _content.value = content
     }
 }

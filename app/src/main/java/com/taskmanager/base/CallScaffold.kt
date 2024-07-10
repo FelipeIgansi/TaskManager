@@ -13,7 +13,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
@@ -27,6 +26,7 @@ import com.taskmanager.activity.viewmodel.TaskEditViewModel
 import com.taskmanager.activity.viewmodel.TaskListViewModel
 import com.taskmanager.data.LocalTaskData
 import com.taskmanager.data.TaskDatabase
+import com.taskmanager.theme.DarkGreen
 
 class CallScaffold(
     private val navController: NavHostController,
@@ -69,10 +69,10 @@ class CallScaffold(
     @Composable
     fun CustomTopAppBar(screen: String, viewModel: ViewModel) {
         val title = when (screen) {
-            Routes.TaskAdd.route -> Constants.CREATETASKTEXT
-            Routes.TaskEdit.route -> Constants.EDITTASKTEXT
-            Routes.TaskList.route -> Constants.LISTTASKTEXT
-            Routes.TaskDetail.route -> Constants.DETAILTASKTEXT
+            Routes.TaskAdd.route -> Constants.TOPAPPBARHEADER.CREATETASKTEXT
+            Routes.TaskEdit.route -> Constants.TOPAPPBARHEADER.EDITTASKTEXT
+            Routes.TaskList.route -> Constants.TOPAPPBARHEADER.LISTTASKTEXT
+            Routes.TaskDetail.route -> Constants.TOPAPPBARHEADER.DETAILTASKTEXT
             else -> ""
         }
 
@@ -98,7 +98,7 @@ class CallScaffold(
             Icon(
                 Icons.Default.Done,
                 contentDescription = null,
-                tint = Color.Green,
+                tint = DarkGreen,
                 modifier = Modifier.size(25.dp)
             )
         }

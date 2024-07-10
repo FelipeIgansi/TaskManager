@@ -24,8 +24,8 @@ class TaskEditViewModel(
     private var _title = MutableStateFlow("")
     val title: StateFlow<String> = _title
 
-    private var _description = MutableStateFlow("")
-    val description: StateFlow<String> = _description
+    private var _content = MutableStateFlow("")
+    val content: StateFlow<String> = _content
 
     private var _isSaveRequest = MutableStateFlow(false)
     val isSaveRequest: StateFlow<Boolean> = _isSaveRequest
@@ -34,7 +34,7 @@ class TaskEditViewModel(
         viewModelScope.launch {
             _task.value = localDB.taskdao().getByID(localData.getByID(Constants.TASK_KEY))
             setTitle(_task.value.title)
-            setDescription(_task.value.content)
+            setContent(_task.value.content)
         }
     }
 
@@ -47,13 +47,13 @@ class TaskEditViewModel(
 
     }
 
-    fun setDescription(description: String) {
-        _description.value = description
+    fun setContent(content: String) {
+        _content.value = content
     }
 
     fun editarTask() {
         viewModelScope.launch {
-            localDB.taskdao().update(TaskEntity(_task.value.id, _title.value, _description.value))
+            localDB.taskdao().update(TaskEntity(_task.value.id, _title.value, _content.value))
         }
         navController.navigate(Routes.TaskList.route)
     }

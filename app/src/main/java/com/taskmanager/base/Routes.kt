@@ -1,8 +1,8 @@
 package com.taskmanager.base
 
 sealed class Routes (val route: String) {
-    data object TaskList : Routes("task_list")
-    data object TaskEdit : Routes("task_edit")
-    data object TaskAdd : Routes("task_add")
-    data object TaskDetail : Routes("task_detail")
+    data object TaskList : Routes(Constants.ROUTES.TASKLISTROUTE)
+    data object TaskEdit : Routes(Constants.ROUTES.TASKEDITROUTE)
+    data object TaskAdd : Routes(Constants.ROUTES.TASKADDROUTE)
+    data object TaskDetail : Routes(Constants.ROUTES.TASKDETAILROUTE)
 }
