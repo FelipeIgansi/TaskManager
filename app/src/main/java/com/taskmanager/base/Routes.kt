@@ -5,4 +5,5 @@ sealed class Routes (val route: String) {
     data object TaskEdit : Routes(Constants.ROUTES.TASKEDITROUTE)
     data object TaskAdd : Routes(Constants.ROUTES.TASKADDROUTE)
     data object TaskDetail : Routes(Constants.ROUTES.TASKDETAILROUTE)
+    data object CreateAccount :Routes(Constants.ROUTES.CREATEACCOUNT)
 }

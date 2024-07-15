@@ -16,10 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
+import com.taskmanager.activity.CreateAccountScreen
 import com.taskmanager.activity.TaskAdd
 import com.taskmanager.activity.TaskDetail
 import com.taskmanager.activity.TaskEdit
 import com.taskmanager.activity.TaskList
+import com.taskmanager.activity.viewmodel.CreateAccountViewModel
 import com.taskmanager.activity.viewmodel.TaskAddViewModel
 import com.taskmanager.activity.viewmodel.TaskDetailViewModel
 import com.taskmanager.activity.viewmodel.TaskEditViewModel
@@ -37,6 +39,7 @@ class CallScaffold(
     private val taskEditViewModel by lazy { TaskEditViewModel(navController = navController, localData = localTaskData, localDB = localdb) }
     private val taskListViewModel by lazy { TaskListViewModel(localDB = localdb) }
     private val taskdetailViewModel by lazy {TaskDetailViewModel(localData = localTaskData, localDB = localdb) }
+    private val createAccountViewModel by lazy { CreateAccountViewModel() }
 
     @Composable
     fun buildScreen(screen: String): PaddingValues {
@@ -45,6 +48,7 @@ class CallScaffold(
             Routes.TaskAdd.route -> taskAddViewModel
             Routes.TaskEdit.route -> taskEditViewModel
             Routes.TaskList.route -> taskListViewModel
+            Routes.CreateAccount.route -> createAccountViewModel
             else -> throw IllegalArgumentException(" Não foi encontrada a tela $screen")
         }
         Scaffold(topBar = { CustomTopAppBar(screen = screen, viewModel = viewModel) }) { padding ->
@@ -58,6 +62,9 @@ class CallScaffold(
                     listViewModel = taskListViewModel,
                     localTaskData = localTaskData
                 )
+
+
+                Routes.CreateAccount.route -> CreateAccountScreen(viewModel = createAccountViewModel)
             }
         }
 

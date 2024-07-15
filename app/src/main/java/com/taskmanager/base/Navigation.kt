@@ -25,7 +25,7 @@ class Navigation {
         localTaskData = LocalTaskData(LocalContext.current)
         localdb = TaskDatabase.getDatabase(LocalContext.current)
 
-        val startDestination = Routes.TaskList.route
+        val startDestination = Routes.CreateAccount.route
 
         if (startDestination.isNotEmpty()) {
             NavHost(
@@ -36,6 +36,7 @@ class Navigation {
                 composableScreen(Routes.TaskAdd.route)
                 composableScreen(Routes.TaskEdit.route)
                 composableScreen(Routes.TaskDetail.route)
+                composableScreen(Routes.CreateAccount.route)
             }
         }
     }
