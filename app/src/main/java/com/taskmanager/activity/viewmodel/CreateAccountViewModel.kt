@@ -1,10 +1,11 @@
 package com.taskmanager.activity.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class CreateAccountViewModel : ViewModel() {
+class CreateAccountViewModel(private val navController: NavController) : ViewModel() {
     private var _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
 
@@ -17,5 +18,9 @@ class CreateAccountViewModel : ViewModel() {
 
     fun setPassword(value: String) {
         _pass.value = value
+    }
+
+    fun navigate(destination: String) {
+        navController.navigate(destination)
     }
 }

@@ -19,10 +19,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.taskmanager.activity.viewmodel.CreateAccountViewModel
+import com.taskmanager.base.Routes
 
 @Composable
 fun CreateAccountScreen(viewModel: CreateAccountViewModel) {
@@ -67,7 +67,8 @@ fun CreateAccountScreen(viewModel: CreateAccountViewModel) {
                     }
 
                     OutlinedButton(
-                        onClick = { /*TODO*/ }, modifier = Modifier
+                        onClick = { viewModel.navigate(Routes.LoginScreen.route) },
+                        modifier = Modifier
                             .fillMaxWidth()
                             .padding(10.dp)
                     ) {
@@ -77,10 +78,4 @@ fun CreateAccountScreen(viewModel: CreateAccountViewModel) {
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CreateAccountPreview() {
-    CreateAccountScreen(CreateAccountViewModel())
 }
