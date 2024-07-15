@@ -25,6 +25,7 @@ class Constants {
         const val TASKLISTROUTE = "task_list"
         const val TASKDETAILROUTE = "task_detail"
         const val CREATEACCOUNT = "create_screen"
+        const val LOGINSCREEN = "login_screen"
     }
     object DATABASE{
         const val SHAREDPREFERENCESNAME = "locataskdata"
