@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -28,6 +29,8 @@ import com.taskmanager.base.Routes
 fun LoginScreen(viewModel: LoginViewModel) {
     val email by viewModel.email.collectAsState()
     val password by viewModel.pass.collectAsState()
+    val msgErro by viewModel.msgError.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -59,10 +62,24 @@ fun LoginScreen(viewModel: LoginViewModel) {
                 ),
                 visualTransformation = PasswordVisualTransformation()
             )
+            if (msgErro.isNotEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 10.dp, top = 10.dp), contentAlignment = Alignment.CenterEnd
+                ) {
+                    Text(
+                        text = msgErro,
+                        style = TextStyle(fontWeight = FontWeight.Bold),
+                        fontSize = 18.sp,
+                        color = Color.Red
+                    )
+                }
+            }
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Column {
                     Button(
-                        onClick = { /*TODO*/ }, modifier = Modifier
+                        onClick = { viewModel.loginUser(email, password) }, modifier = Modifier
                             .fillMaxWidth()
                             .padding(10.dp)
                     ) {
