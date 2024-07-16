@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +22,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.taskmanager.activity.viewmodel.LoginViewModel
-import com.taskmanager.base.Routes
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel) {
@@ -76,24 +74,12 @@ fun LoginScreen(viewModel: LoginViewModel) {
                     )
                 }
             }
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Column {
-                    Button(
-                        onClick = { viewModel.loginUser(email, password) }, modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                    ) {
-                        Text(text = "Login")
-                    }
-                    OutlinedButton(
-                        onClick = { viewModel.navigate(Routes.CreateAccount.route) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                    ) {
-                        Text(text = "Register")
-                    }
-                }
+            Button(
+                onClick = { viewModel.loginUser(email, password) }, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            ) {
+                Text(text = "Login")
             }
         }
     }
