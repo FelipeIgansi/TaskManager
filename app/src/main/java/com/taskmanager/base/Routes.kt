@@ -7,4 +7,5 @@ sealed class Routes (val route: String) {
     data object TaskDetail : Routes(Constants.ROUTES.TASKDETAILROUTE)
     data object CreateAccount :Routes(Constants.ROUTES.CREATEACCOUNT)
     data object LoginScreen : Routes(Constants.ROUTES.LOGINSCREEN)
+    data object  WelcomeScreen : Routes(Constants.ROUTES.WELCOMESCREEN)
 }

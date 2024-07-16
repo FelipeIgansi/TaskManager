@@ -23,12 +23,14 @@ import com.taskmanager.activity.TaskAdd
 import com.taskmanager.activity.TaskDetail
 import com.taskmanager.activity.TaskEdit
 import com.taskmanager.activity.TaskList
+import com.taskmanager.activity.WelcomeScreen
 import com.taskmanager.activity.viewmodel.CreateAccountViewModel
 import com.taskmanager.activity.viewmodel.LoginViewModel
 import com.taskmanager.activity.viewmodel.TaskAddViewModel
 import com.taskmanager.activity.viewmodel.TaskDetailViewModel
 import com.taskmanager.activity.viewmodel.TaskEditViewModel
 import com.taskmanager.activity.viewmodel.TaskListViewModel
+import com.taskmanager.activity.viewmodel.WelcomeViewModel
 import com.taskmanager.data.LocalTaskData
 import com.taskmanager.data.TaskDatabase
 import com.taskmanager.theme.DarkGreen
@@ -45,6 +47,7 @@ class CallScaffold(
     private val taskdetailViewModel by lazy {TaskDetailViewModel(localData = localTaskData, localDB = localdb) }
     private val createAccountViewModel by lazy { CreateAccountViewModel(navController, auth) }
     private val loginViewModel by lazy { LoginViewModel(navController, auth) }
+    private val welcomeViewModel by lazy { WelcomeViewModel(navController) }
 
     @Composable
     fun buildScreen(screen: String): PaddingValues {
@@ -55,6 +58,7 @@ class CallScaffold(
             Routes.TaskList.route -> taskListViewModel
             Routes.CreateAccount.route -> createAccountViewModel
             Routes.LoginScreen.route -> loginViewModel
+            Routes.WelcomeScreen.route -> welcomeViewModel
             else -> throw IllegalArgumentException(" Não foi encontrada a tela $screen")
         }
         Scaffold(topBar = { CustomTopAppBar(screen = screen, viewModel = viewModel) }) { padding ->
@@ -72,6 +76,7 @@ class CallScaffold(
 
                 Routes.CreateAccount.route -> CreateAccountScreen(viewModel = createAccountViewModel)
                 Routes.LoginScreen.route -> LoginScreen(viewModel = loginViewModel)
+                Routes.WelcomeScreen.route -> WelcomeScreen(viewModel = welcomeViewModel)
             }
         }
 
@@ -98,9 +103,15 @@ class CallScaffold(
                 }
             },
             navigationIcon = {
-                if (viewModel !is TaskListViewModel) {
-                    IconButton(onClick = { navController.navigate(Routes.TaskList.route) }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                when(viewModel){
+                    is TaskAddViewModel,
+                    is TaskEditViewModel,
+                    is TaskDetailViewModel,
+                    is CreateAccountViewModel,
+                    is LoginViewModel-> {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                        }
                     }
                 }
             })

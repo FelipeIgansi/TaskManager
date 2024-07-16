@@ -32,7 +32,7 @@ class Navigation {
         localdb = TaskDatabase.getDatabase(LocalContext.current)
         auth = FirebaseAuth.getInstance()
 
-        val startDestination = Routes.LoginScreen.route
+        val startDestination = Routes.WelcomeScreen.route
 
         if (startDestination.isNotEmpty()) {
             NavHost(
@@ -45,6 +45,7 @@ class Navigation {
                 composableScreen(Routes.TaskDetail.route)
                 composableScreen(Routes.CreateAccount.route)
                 composableScreen(Routes.LoginScreen.route)
+                composableScreen(Routes.WelcomeScreen.route)
             }
         }
     }
