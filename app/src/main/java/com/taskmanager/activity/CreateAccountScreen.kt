@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -28,12 +29,17 @@ import com.taskmanager.base.Routes
 fun CreateAccountScreen(viewModel: CreateAccountViewModel) {
     val email by viewModel.email.collectAsState()
     val password by viewModel.pass.collectAsState()
+    val msgErro by viewModel.msgError.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(10.dp), contentAlignment = Alignment.Center
     ) {
-        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
                 text = "Register",
                 fontSize = 32.sp,
@@ -56,10 +62,24 @@ fun CreateAccountScreen(viewModel: CreateAccountViewModel) {
                 ),
                 visualTransformation = PasswordVisualTransformation()
             )
+            if (msgErro.isNotEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 10.dp, top = 10.dp), contentAlignment = Alignment.CenterEnd
+                ) {
+                    Text(
+                        text = msgErro,
+                        style = TextStyle(fontWeight = FontWeight.Bold),
+                        fontSize = 18.sp,
+                        color = Color.Red
+                    )
+                }
+            }
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Column {
                     Button(
-                        onClick = { /*TODO*/ }, modifier = Modifier
+                        onClick = { viewModel.registerUser(email, password) }, modifier = Modifier
                             .fillMaxWidth()
                             .padding(10.dp)
                     ) {
