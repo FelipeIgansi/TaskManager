@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.FirebaseAuth
 import com.taskmanager.activity.CreateAccountScreen
 import com.taskmanager.activity.LoginScreen
 import com.taskmanager.activity.TaskAdd
@@ -35,14 +36,15 @@ import com.taskmanager.theme.DarkGreen
 class CallScaffold(
     private val navController: NavHostController,
     private val localTaskData: LocalTaskData,
-    localdb: TaskDatabase
+    localdb: TaskDatabase,
+    private val auth: FirebaseAuth
 ) {
     private val taskAddViewModel by lazy { TaskAddViewModel(navController = navController, localDB = localdb) }
     private val taskEditViewModel by lazy { TaskEditViewModel(navController = navController, localData = localTaskData, localDB = localdb) }
     private val taskListViewModel by lazy { TaskListViewModel(localDB = localdb) }
     private val taskdetailViewModel by lazy {TaskDetailViewModel(localData = localTaskData, localDB = localdb) }
-    private val createAccountViewModel by lazy { CreateAccountViewModel(navController) }
-    private val loginViewModel by lazy { LoginViewModel(navController) }
+    private val createAccountViewModel by lazy { CreateAccountViewModel(navController, auth) }
+    private val loginViewModel by lazy { LoginViewModel(navController, auth) }
 
     @Composable
     fun buildScreen(screen: String): PaddingValues {

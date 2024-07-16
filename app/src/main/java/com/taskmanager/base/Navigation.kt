@@ -18,7 +18,11 @@ class Navigation {
     private lateinit var auth: FirebaseAuth
 
     private fun NavGraphBuilder.composableScreen(route: String) {
-        composable(route) { CallScaffold(navController, localTaskData, localdb).buildScreen(route) }
+        composable(route) {
+            CallScaffold(navController, localTaskData, localdb, auth).buildScreen(
+                route
+            )
+        }
     }
 
     @Composable
@@ -26,6 +30,7 @@ class Navigation {
         navController = rememberNavController()
         localTaskData = LocalTaskData(LocalContext.current)
         localdb = TaskDatabase.getDatabase(LocalContext.current)
+        auth = FirebaseAuth.getInstance()
 
         val startDestination = Routes.LoginScreen.route
 
