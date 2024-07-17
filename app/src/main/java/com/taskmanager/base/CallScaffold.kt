@@ -13,10 +13,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
+import com.taskmanager.R
 import com.taskmanager.activity.CreateAccountScreen
 import com.taskmanager.activity.LoginScreen
 import com.taskmanager.activity.TaskAdd
@@ -32,6 +34,7 @@ import com.taskmanager.activity.viewmodel.TaskEditViewModel
 import com.taskmanager.activity.viewmodel.TaskListViewModel
 import com.taskmanager.activity.viewmodel.WelcomeViewModel
 import com.taskmanager.data.LocalTaskData
+import com.taskmanager.data.SessionAuth
 import com.taskmanager.data.TaskDatabase
 import com.taskmanager.theme.DarkGreen
 
@@ -39,15 +42,16 @@ class CallScaffold(
     private val navController: NavHostController,
     private val localTaskData: LocalTaskData,
     localdb: TaskDatabase,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val sessionAuth: SessionAuth
 ) {
     private val taskAddViewModel by lazy { TaskAddViewModel(navController = navController, localDB = localdb) }
     private val taskEditViewModel by lazy { TaskEditViewModel(navController = navController, localData = localTaskData, localDB = localdb) }
     private val taskListViewModel by lazy { TaskListViewModel(localDB = localdb) }
-    private val taskdetailViewModel by lazy {TaskDetailViewModel(localData = localTaskData, localDB = localdb) }
-    private val createAccountViewModel by lazy { CreateAccountViewModel(navController, auth) }
-    private val loginViewModel by lazy { LoginViewModel(navController, auth) }
-    private val welcomeViewModel by lazy { WelcomeViewModel(navController) }
+    private val taskdetailViewModel by lazy { TaskDetailViewModel(localData = localTaskData, localDB = localdb) }
+    private val createAccountViewModel by lazy { CreateAccountViewModel(navController, auth, sessionAuth) }
+    private val loginViewModel by lazy { LoginViewModel(navController, auth, sessionAuth) }
+    private val welcomeViewModel by lazy { WelcomeViewModel(navController, sessionAuth) }
 
     @Composable
     fun buildScreen(screen: String): PaddingValues {
@@ -100,15 +104,16 @@ class CallScaffold(
                 when (viewModel) {
                     is TaskAddViewModel -> ButtonSave(onSaveClick = { taskAddViewModel.setSaveRequest(true) })
                     is TaskEditViewModel -> ButtonSave(onSaveClick = { taskEditViewModel.setSaveRequest(true) })
+                    is TaskListViewModel -> ButtonLogout(Routes.WelcomeScreen.route)
                 }
             },
             navigationIcon = {
-                when(viewModel){
+                when (viewModel) {
                     is TaskAddViewModel,
                     is TaskEditViewModel,
                     is TaskDetailViewModel,
                     is CreateAccountViewModel,
-                    is LoginViewModel-> {
+                    is LoginViewModel -> {
                         IconButton(onClick = { navController.navigateUp() }) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                         }
@@ -116,6 +121,16 @@ class CallScaffold(
                 }
             })
     }
+
+    @Composable
+    fun ButtonLogout(destination: String) =
+        IconButton(onClick = {
+            sessionAuth.saveAuthenticationStage(destination)
+            navController.navigate(destination)
+        }, Modifier.size(30.dp)) {
+            Icon(painter = painterResource(id = R.drawable.logout), contentDescription = null)
+        }
+
 
     @Composable
     fun ButtonSave(onSaveClick: () -> Unit) {

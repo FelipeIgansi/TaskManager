@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.taskmanager.base.Constants
 import com.taskmanager.base.Routes
+import com.taskmanager.data.SessionAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +18,8 @@ import kotlinx.coroutines.launch
 
 class CreateAccountViewModel(
     private val navController: NavController,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val sessionAuth: SessionAuth
 ) : ViewModel() {
     private var _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
@@ -65,7 +67,9 @@ class CreateAccountViewModel(
 
                     }
                     .addOnSuccessListener {
-                        navController.navigate(Routes.TaskList.route)
+                        val destination = Routes.TaskList.route
+                        sessionAuth.saveAuthenticationStage(destination)
+                        navController.navigate(destination)
                     }
             }
         } else setMsgError(Constants.DATABASE.FIREBASE.MISSINGEMAILORPASSWORD)

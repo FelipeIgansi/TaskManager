@@ -8,6 +8,7 @@ class Constants {
         const val TASK_KEY = "task_key"
     }
     object AUTHENTICATION{
+        const val KEYSESSION = "keySession"
         const val REGISTER = "Register"
         const val EMAIL = "E-mail"
         const val PASSWORD ="Password"

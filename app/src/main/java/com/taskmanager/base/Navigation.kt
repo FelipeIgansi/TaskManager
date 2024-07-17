@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.taskmanager.data.LocalTaskData
+import com.taskmanager.data.SessionAuth
 import com.taskmanager.data.TaskDatabase
 
 class Navigation {
@@ -16,12 +17,11 @@ class Navigation {
     private lateinit var localTaskData: LocalTaskData
     private lateinit var localdb: TaskDatabase
     private lateinit var auth: FirebaseAuth
+    private lateinit var sessionAuth: SessionAuth
 
     private fun NavGraphBuilder.composableScreen(route: String) {
         composable(route) {
-            CallScaffold(navController, localTaskData, localdb, auth).buildScreen(
-                route
-            )
+            CallScaffold(navController, localTaskData, localdb, auth, sessionAuth).buildScreen(route)
         }
     }
 
@@ -31,8 +31,9 @@ class Navigation {
         localTaskData = LocalTaskData(LocalContext.current)
         localdb = TaskDatabase.getDatabase(LocalContext.current)
         auth = FirebaseAuth.getInstance()
+        sessionAuth = SessionAuth(LocalContext.current)
 
-        val startDestination = Routes.WelcomeScreen.route
+        val startDestination = sessionAuth.getAuthentication() ?: Routes.WelcomeScreen.route
 
         if (startDestination.isNotEmpty()) {
             NavHost(

@@ -7,13 +7,17 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.taskmanager.base.Constants
 import com.taskmanager.base.Routes
+import com.taskmanager.data.SessionAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val navController: NavController, private val auth: FirebaseAuth) :
-    ViewModel() {
+class LoginViewModel(
+    private val navController: NavController,
+    private val auth: FirebaseAuth,
+    private val sessionAuth: SessionAuth
+) : ViewModel() {
     private var _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
 
@@ -31,12 +35,12 @@ class LoginViewModel(private val navController: NavController, private val auth:
         _pass.value = value
     }
 
-    private suspend fun deleteMsgErroWithTimer(){
+    private suspend fun deleteMsgErroWithTimer() {
         delay(3000)
         if (_msgError.value.isNotEmpty()) _msgError.value = ""
     }
 
-    private fun setMsgError(message: String){
+    private fun setMsgError(message: String) {
         viewModelScope.launch {
             _msgError.value = message
             deleteMsgErroWithTimer()
@@ -48,15 +52,17 @@ class LoginViewModel(private val navController: NavController, private val auth:
             viewModelScope.launch {
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnFailureListener { exception ->
-                        setMsgError( when (exception) {
-                            is FirebaseAuthInvalidCredentialsException -> Constants.DATABASE.FIREBASE.INVALIDCREDENTIALSEXCEPTION
-                            else -> Constants.DATABASE.FIREBASE.GENERICERROR
-                        })
+                        setMsgError(when (exception) {
+                                is FirebaseAuthInvalidCredentialsException -> Constants.DATABASE.FIREBASE.INVALIDCREDENTIALSEXCEPTION
+                                else -> Constants.DATABASE.FIREBASE.GENERICERROR
+                            })
                     }
                     .addOnSuccessListener {
-                        navController.navigate(Routes.TaskList.route)
+                        val destination = Routes.TaskList.route
+                        sessionAuth.saveAuthenticationStage(destination)
+                        navController.navigate(destination)
                     }
             }
-        }else setMsgError(Constants.DATABASE.FIREBASE.MISSINGEMAILORPASSWORD)
+        } else setMsgError(Constants.DATABASE.FIREBASE.MISSINGEMAILORPASSWORD)
     }
 }
