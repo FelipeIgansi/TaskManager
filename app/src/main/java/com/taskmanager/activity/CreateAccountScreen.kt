@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.taskmanager.activity.viewmodel.CreateAccountViewModel
+import com.taskmanager.base.Constants
 
 @Composable
 fun CreateAccountScreen(viewModel: CreateAccountViewModel) {
@@ -39,13 +40,13 @@ fun CreateAccountScreen(viewModel: CreateAccountViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Register",
+                text = Constants.AUTHENTICATION.REGISTER,
                 fontSize = 32.sp,
                 style = TextStyle(fontWeight = FontWeight.Bold)
             )
             OutlinedTextField(
                 value = email, onValueChange = { viewModel.setEmail(it) },
-                label = { Text(text = "E-mail") },
+                label = { Text(text = Constants.AUTHENTICATION.EMAIL) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Email
@@ -53,7 +54,7 @@ fun CreateAccountScreen(viewModel: CreateAccountViewModel) {
             )
             OutlinedTextField(
                 value = password, onValueChange = { viewModel.setPassword(it) },
-                label = { Text(text = "Password") },
+                label = { Text(text = Constants.AUTHENTICATION.PASSWORD) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Password
@@ -79,10 +80,8 @@ fun CreateAccountScreen(viewModel: CreateAccountViewModel) {
                     .fillMaxWidth()
                     .padding(10.dp)
             ) {
-                Text(text = "Register")
+                Text(text = Constants.AUTHENTICATION.REGISTER)
             }
-
-
         }
     }
 }

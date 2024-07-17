@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.taskmanager.activity.viewmodel.LoginViewModel
+import com.taskmanager.base.Constants
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel) {
@@ -39,13 +40,13 @@ fun LoginScreen(viewModel: LoginViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Login",
+                text = Constants.AUTHENTICATION.LOGIN,
                 fontSize = 32.sp,
                 style = TextStyle(fontWeight = FontWeight.Bold)
             )
             OutlinedTextField(
                 value = email, onValueChange = { viewModel.setEmail(it) },
-                label = { Text(text = "E-mail") },
+                label = { Text(text = Constants.AUTHENTICATION.EMAIL) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Email
@@ -53,7 +54,7 @@ fun LoginScreen(viewModel: LoginViewModel) {
             )
             OutlinedTextField(
                 value = password, onValueChange = { viewModel.setPassword(it) },
-                label = { Text(text = "Password") },
+                label = { Text(text = Constants.AUTHENTICATION.PASSWORD) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Password
@@ -79,7 +80,7 @@ fun LoginScreen(viewModel: LoginViewModel) {
                     .fillMaxWidth()
                     .padding(10.dp)
             ) {
-                Text(text = "Login")
+                Text(text = Constants.AUTHENTICATION.LOGIN)
             }
         }
     }

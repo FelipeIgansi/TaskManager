@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.taskmanager.activity.viewmodel.WelcomeViewModel
+import com.taskmanager.base.Constants
 import com.taskmanager.base.Routes
 
 @Composable
@@ -30,7 +31,7 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "Bem vindo(a)!",
+                text = Constants.WELCOMESCREEN.WELCOMETEXT,
                 fontSize = 30.sp,
                 style = TextStyle(fontWeight = FontWeight.Bold)
             )
@@ -49,7 +50,7 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Tenha todas as suas notas em um só lugar!",
+                    text = Constants.WELCOMESCREEN.PHRASE,
                     fontSize = 23.sp,
                     modifier = Modifier.fillMaxWidth(),
                     style = TextStyle(textAlign = TextAlign.Center)
@@ -60,11 +61,11 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
 
             Row {
                 Button(onClick = { viewModel.navigate(Routes.CreateAccount.route) }) {
-                    Text(text = "Cadastrar")
+                    Text(text = Constants.WELCOMESCREEN.REGISTER)
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Button(onClick = { viewModel.navigate(Routes.LoginScreen.route) }) {
-                    Text(text = "Logar")
+                    Text(text = Constants.WELCOMESCREEN.LOGIN)
                 }
             }
         }

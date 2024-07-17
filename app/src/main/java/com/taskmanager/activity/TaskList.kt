@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
@@ -134,7 +135,7 @@ fun TaskList(
         contentAlignment = Alignment.BottomEnd
     ) {
         FloatingActionButton(onClick = { navController.navigate(Routes.TaskAdd.route) }) {
-            Text(text = "+")
+            Icon(Icons.Default.Add, contentDescription = null)
         }
     }
 

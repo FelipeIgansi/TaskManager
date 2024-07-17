@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.taskmanager.base.Constants
 import com.taskmanager.base.Routes
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,10 +31,6 @@ class LoginViewModel(private val navController: NavController, private val auth:
         _pass.value = value
     }
 
-    fun navigate(destination: String) {
-        navController.navigate(destination)
-    }
-
     private suspend fun deleteMsgErroWithTimer(){
         delay(3000)
         if (_msgError.value.isNotEmpty()) _msgError.value = ""
@@ -52,14 +49,14 @@ class LoginViewModel(private val navController: NavController, private val auth:
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnFailureListener { exception ->
                         setMsgError( when (exception) {
-                            is FirebaseAuthInvalidCredentialsException -> "E-mail ou senha não estão corretos!"
-                            else -> "Ocorreu um erro ao tentar logar com seu usuário!"
+                            is FirebaseAuthInvalidCredentialsException -> Constants.DATABASE.FIREBASE.INVALIDCREDENTIALSEXCEPTION
+                            else -> Constants.DATABASE.FIREBASE.GENERICERROR
                         })
                     }
                     .addOnSuccessListener {
                         navController.navigate(Routes.TaskList.route)
                     }
             }
-        }else setMsgError("Você precisa informar um email e senha!")
+        }else setMsgError(Constants.DATABASE.FIREBASE.MISSINGEMAILORPASSWORD)
     }
 }

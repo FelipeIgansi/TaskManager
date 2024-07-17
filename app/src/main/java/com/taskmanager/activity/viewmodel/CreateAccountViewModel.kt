@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.taskmanager.base.Constants
 import com.taskmanager.base.Routes
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,10 +36,6 @@ class CreateAccountViewModel(
         _pass.value = value
     }
 
-    fun navigate(destination: String) {
-        navController.navigate(destination)
-    }
-
     private suspend fun deleteMsgErrorWithTimer() {
         delay(3000)
         if (_msgError.value.isNotEmpty()) _msgError.value = ""
@@ -58,10 +55,10 @@ class CreateAccountViewModel(
                     .addOnFailureListener { exception ->
                         setMsgError(
                             when (exception) {
-                                is FirebaseAuthWeakPasswordException -> "A senha deve ter pelo menos 6 caracteres!"
-                                is FirebaseAuthInvalidCredentialsException -> "O email está incorreto!"
-                                is FirebaseAuthUserCollisionException -> "Este email já está cadastrado!"
-                                else -> "Seu email ou senha não está correto!"
+                                is FirebaseAuthWeakPasswordException -> Constants.DATABASE.FIREBASE.WEAKPASSWORDEXCEPTION
+                                is FirebaseAuthInvalidCredentialsException -> Constants.DATABASE.FIREBASE.INVALIDCREDENTIALSEXCEPTION
+                                is FirebaseAuthUserCollisionException -> Constants.DATABASE.FIREBASE.COLLISIONEXCEPTION
+                                else -> Constants.DATABASE.FIREBASE.GENERICERROR
                             }
                         )
                         Log.i("debug Cadastro de usuario", "registerUser: $exception")
@@ -71,6 +68,6 @@ class CreateAccountViewModel(
                         navController.navigate(Routes.TaskList.route)
                     }
             }
-        } else setMsgError("Informe um email e senha.")
+        } else setMsgError(Constants.DATABASE.FIREBASE.MISSINGEMAILORPASSWORD)
     }
 }
