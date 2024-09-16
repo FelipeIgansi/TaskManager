@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.google.firebase.firestore.FirebaseFirestore
 import com.taskmanager.base.Constants
 import com.taskmanager.base.Routes
 import com.taskmanager.data.SessionAuth
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 class CreateAccountViewModel(
     private val navController: NavController,
     private val auth: FirebaseAuth,
-    private val sessionAuth: SessionAuth
+    private val sessionAuth: SessionAuth,
+    private val cloudDB: FirebaseFirestore
 ) : ViewModel() {
     private var _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
@@ -51,9 +53,16 @@ class CreateAccountViewModel(
     }
 
     fun registerUser(email: String, passoword: String) {
+        val mapUser = mapOf(
+            "nome" to email.substring(0, email.indexOf("@")),
+            "email" to email)
         if (email.isNotEmpty() && passoword.isNotEmpty()) {
             viewModelScope.launch {
                 auth.createUserWithEmailAndPassword(email, passoword)
+                    .addOnCompleteListener {
+                        cloudDB.collection("users")
+                            .add(mapUser)
+                    }
                     .addOnFailureListener { exception ->
                         setMsgError(
                             when (exception) {

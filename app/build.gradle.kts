@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.support.annotations)
     implementation(libs.androidx.room.runtime)
     implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
     kapt(libs.androidx.room.compiler)
     testImplementation(libs.androidx.room.testing)
     implementation(libs.androidx.room.paging)

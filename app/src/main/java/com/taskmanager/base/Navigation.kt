@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.taskmanager.data.LocalTaskData
 import com.taskmanager.data.SessionAuth
 import com.taskmanager.data.TaskDatabase
@@ -18,10 +19,18 @@ class Navigation {
     private lateinit var localdb: TaskDatabase
     private lateinit var auth: FirebaseAuth
     private lateinit var sessionAuth: SessionAuth
+    private lateinit var cloudDB : FirebaseFirestore
 
     private fun NavGraphBuilder.composableScreen(route: String) {
         composable(route) {
-            CallScaffold(navController, localTaskData, localdb, auth, sessionAuth).buildScreen(route)
+            CallScaffold(
+                navController,
+                localTaskData,
+                localdb,
+                auth,
+                sessionAuth,
+                cloudDB
+            ).buildScreen(route)
         }
     }
 
@@ -32,6 +41,7 @@ class Navigation {
         localdb = TaskDatabase.getDatabase(LocalContext.current)
         auth = FirebaseAuth.getInstance()
         sessionAuth = SessionAuth(LocalContext.current)
+        cloudDB = FirebaseFirestore.getInstance()
 
         val startDestination = sessionAuth.getAuthentication() ?: Routes.WelcomeScreen.route
 

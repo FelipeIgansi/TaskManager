@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.taskmanager.R
 import com.taskmanager.activity.CreateAccountScreen
 import com.taskmanager.activity.LoginScreen
@@ -41,15 +42,29 @@ import com.taskmanager.theme.DarkGreen
 class CallScaffold(
     private val navController: NavHostController,
     private val localTaskData: LocalTaskData,
-    localdb: TaskDatabase,
+    private val localdb: TaskDatabase,
     private val auth: FirebaseAuth,
-    private val sessionAuth: SessionAuth
+    private val sessionAuth: SessionAuth,
+    private val cloudDB: FirebaseFirestore
 ) {
-    private val taskAddViewModel by lazy { TaskAddViewModel(navController = navController, localDB = localdb) }
-    private val taskEditViewModel by lazy { TaskEditViewModel(navController = navController, localData = localTaskData, localDB = localdb) }
-    private val taskListViewModel by lazy { TaskListViewModel(localDB = localdb) }
-    private val taskdetailViewModel by lazy { TaskDetailViewModel(localData = localTaskData, localDB = localdb) }
-    private val createAccountViewModel by lazy { CreateAccountViewModel(navController, auth, sessionAuth) }
+    private val taskAddViewModel by lazy { TaskAddViewModel(navController, localdb) }
+    private val taskEditViewModel by lazy {
+        TaskEditViewModel(
+            navController,
+            localTaskData,
+            localdb
+        )
+    }
+    private val taskListViewModel by lazy { TaskListViewModel(localdb) }
+    private val taskdetailViewModel by lazy { TaskDetailViewModel(localTaskData, localdb) }
+    private val createAccountViewModel by lazy {
+        CreateAccountViewModel(
+            navController,
+            auth,
+            sessionAuth,
+            cloudDB
+        )
+    }
     private val loginViewModel by lazy { LoginViewModel(navController, auth, sessionAuth) }
     private val welcomeViewModel by lazy { WelcomeViewModel(navController, sessionAuth) }
 
@@ -70,22 +85,14 @@ class CallScaffold(
                 Routes.TaskDetail.route -> TaskDetail(padding, taskdetailViewModel)
                 Routes.TaskAdd.route -> TaskAdd(padding, taskAddViewModel)
                 Routes.TaskEdit.route -> TaskEdit(padding, taskEditViewModel)
-                Routes.TaskList.route -> TaskList(
-                    padding = padding,
-                    navController = navController,
-                    listViewModel = taskListViewModel,
-                    localTaskData = localTaskData
-                )
+                Routes.TaskList.route -> TaskList(padding, navController, taskListViewModel, localTaskData)
 
-
-                Routes.CreateAccount.route -> CreateAccountScreen(viewModel = createAccountViewModel)
-                Routes.LoginScreen.route -> LoginScreen(viewModel = loginViewModel)
-                Routes.WelcomeScreen.route -> WelcomeScreen(viewModel = welcomeViewModel)
+                Routes.CreateAccount.route -> CreateAccountScreen(createAccountViewModel)
+                Routes.LoginScreen.route -> LoginScreen(loginViewModel)
+                Routes.WelcomeScreen.route -> WelcomeScreen(welcomeViewModel)
             }
         }
-
         return PaddingValues()
-
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -102,8 +109,18 @@ class CallScaffold(
         CenterAlignedTopAppBar(title = { Text(text = title) },
             actions = {
                 when (viewModel) {
-                    is TaskAddViewModel -> ButtonSave(onSaveClick = { taskAddViewModel.setSaveRequest(true) })
-                    is TaskEditViewModel -> ButtonSave(onSaveClick = { taskEditViewModel.setSaveRequest(true) })
+                    is TaskAddViewModel -> ButtonSave(onSaveClick = {
+                        taskAddViewModel.setSaveRequest(
+                            true
+                        )
+                    })
+
+                    is TaskEditViewModel -> ButtonSave(onSaveClick = {
+                        taskEditViewModel.setSaveRequest(
+                            true
+                        )
+                    })
+
                     is TaskListViewModel -> ButtonLogout(Routes.WelcomeScreen.route)
                 }
             },
