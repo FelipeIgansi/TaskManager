@@ -76,7 +76,7 @@ fun CreateAccountScreen(viewModel: CreateAccountViewModel) {
                 }
             }
             Button(
-                onClick = { viewModel.registerUser(email, password) }, modifier = Modifier
+                onClick = { viewModel.saveUser(email, password) }, modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
             ) {
