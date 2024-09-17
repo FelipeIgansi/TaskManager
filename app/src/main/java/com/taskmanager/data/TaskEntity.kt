@@ -9,5 +9,6 @@ import com.taskmanager.base.Constants
 data class TaskEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0L,
     @ColumnInfo(name = Constants.DATABASE.TITLECOLUMN) var title: String = "",
-    @ColumnInfo(name = Constants.DATABASE.CONTENTCOLUMN) var content: String = ""
+    @ColumnInfo(name = Constants.DATABASE.CONTENTCOLUMN) var content: String = "",
+    @ColumnInfo(name = "fkIDUser") var fkIDUser:String? = ""
 )

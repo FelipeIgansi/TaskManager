@@ -1,8 +1,12 @@
 package com.taskmanager.activity.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.taskmanager.activity.TaskModel
 import com.taskmanager.base.Routes
 import com.taskmanager.data.TaskDatabase
 import com.taskmanager.data.TaskEntity
@@ -12,7 +16,9 @@ import kotlinx.coroutines.launch
 
 class TaskAddViewModel(
     private val navController: NavController,
-    private val localDB: TaskDatabase
+    private val localDB: TaskDatabase,
+    private val cloudDB :FirebaseFirestore,
+    private val auth :FirebaseAuth
 ) : ViewModel() {
 
     private var _title = MutableStateFlow("")
@@ -30,7 +36,17 @@ class TaskAddViewModel(
 
     fun createTask() {
         viewModelScope.launch {
-            localDB.taskdao().insertAll(TaskEntity(0, _title.value, _content.value))
+            val uuid = auth.currentUser?.uid
+            val taskModel = TaskModel(title = _title.value, content = _content.value, uuid = uuid)
+            localDB.taskdao().insertAll(TaskEntity(0, _title.value, _content.value, uuid))
+
+            cloudDB.collection("tasks").add(taskModel)
+                .addOnSuccessListener {
+                    Log.i("createTask", "createTask: Cadastro da nota foi realizado com sucesso!")
+                }
+                .addOnFailureListener{ e->
+                    Log.i("createTask", "createTask: Ocorreu o seguinte erro $e ao tentar cadastrar uma nota")
+                }
         }
 
         navigate(Routes.TaskList.route)
