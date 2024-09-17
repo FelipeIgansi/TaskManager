@@ -67,14 +67,7 @@ class CreateAccountViewModel(
                         saveOnCloudDB(mapUser)
                     }
                     .addOnFailureListener { exception ->
-                        setMsgError(
-                            when (exception) {
-                                is FirebaseAuthWeakPasswordException -> Constants.DATABASE.FIREBASE.WEAKPASSWORDEXCEPTION
-                                is FirebaseAuthInvalidCredentialsException -> Constants.DATABASE.FIREBASE.INVALIDCREDENTIALSEXCEPTION
-                                is FirebaseAuthUserCollisionException -> Constants.DATABASE.FIREBASE.COLLISIONEXCEPTION
-                                else -> Constants.DATABASE.FIREBASE.GENERICERROR
-                            }
-                        )
+                        setMsgError(verifyErrorMessage(exception))
                         Log.i("debug Cadastro de usuario", "registerUser: $exception")
 
                     }
@@ -87,6 +80,12 @@ class CreateAccountViewModel(
         } else setMsgError(Constants.DATABASE.FIREBASE.MISSINGEMAILORPASSWORD)
     }
 
+    private fun verifyErrorMessage(exception: Exception) = when (exception) {
+        is FirebaseAuthWeakPasswordException -> Constants.DATABASE.FIREBASE.WEAKPASSWORDEXCEPTION
+        is FirebaseAuthInvalidCredentialsException -> Constants.DATABASE.FIREBASE.INVALIDCREDENTIALSEXCEPTION
+        is FirebaseAuthUserCollisionException -> Constants.DATABASE.FIREBASE.COLLISIONEXCEPTION
+        else -> Constants.DATABASE.FIREBASE.GENERICERROR
+    }
 
     private fun saveOnCloudDB(mapUser: UserModel) {
         cloudDB.collection("users").add(mapUser)
