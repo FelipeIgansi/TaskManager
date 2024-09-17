@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.firestore.FirebaseFirestore
+import com.taskmanager.activity.UserModel
 import com.taskmanager.base.Constants
 import com.taskmanager.base.Routes
 import com.taskmanager.data.SessionAuth
@@ -16,6 +17,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class CreateAccountViewModel(
     private val navController: NavController,
@@ -62,8 +64,7 @@ class CreateAccountViewModel(
             viewModelScope.launch {
                 auth.createUserWithEmailAndPassword(email, passoword)
                     .addOnCompleteListener {
-                        cloudDB.collection("users")
-                            .add(mapUser)
+                        saveOnCloudDB(mapUser)
                     }
                     .addOnFailureListener { exception ->
                         setMsgError(
@@ -84,5 +85,19 @@ class CreateAccountViewModel(
                     }
             }
         } else setMsgError(Constants.DATABASE.FIREBASE.MISSINGEMAILORPASSWORD)
+    }
+
+
+    private fun saveOnCloudDB(mapUser: UserModel) {
+        cloudDB.collection("users").add(mapUser)
+            .addOnFailureListener { e ->
+                Log.i(
+                    "registerUser",
+                    "registerUser: Ocorreu o erro: $e ao tentar realizar um cadastro de usuário"
+                )
+            }
+            .addOnSuccessListener {
+                Log.i("registerUser", "registerUser: O usuário foi salvo com sucesso!")
+            }
     }
 }
