@@ -48,7 +48,7 @@ class CallScaffold(
     private val cloudDB: FirebaseFirestore
 ) {
     private val taskAddViewModel by lazy { TaskAddViewModel(navController, localdb, cloudDB, auth) }
-    private val taskEditViewModel by lazy { TaskEditViewModel(navController, localTaskData, localdb) }
+    private val taskEditViewModel by lazy { TaskEditViewModel(navController, localTaskData, localdb, cloudDB, auth) }
     private val taskListViewModel by lazy { TaskListViewModel(localdb, auth) }
     private val taskdetailViewModel by lazy { TaskDetailViewModel(localTaskData, localdb) }
     private val createAccountViewModel by lazy { CreateAccountViewModel(navController, auth, sessionAuth, cloudDB) }
@@ -96,18 +96,8 @@ class CallScaffold(
         CenterAlignedTopAppBar(title = { Text(text = title) },
             actions = {
                 when (viewModel) {
-                    is TaskAddViewModel -> ButtonSave(onSaveClick = {
-                        taskAddViewModel.setSaveRequest(
-                            true
-                        )
-                    })
-
-                    is TaskEditViewModel -> ButtonSave(onSaveClick = {
-                        taskEditViewModel.setSaveRequest(
-                            true
-                        )
-                    })
-
+                    is TaskAddViewModel -> ButtonSave(onSaveClick = { taskAddViewModel.setSaveRequest(true) })
+                    is TaskEditViewModel -> ButtonSave(onSaveClick = { taskEditViewModel.setSaveRequest(true) })
                     is TaskListViewModel -> ButtonLogout(Routes.WelcomeScreen.route)
                 }
             },
