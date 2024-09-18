@@ -25,9 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -36,7 +33,6 @@ import com.taskmanager.activity.viewmodel.TaskListViewModel
 import com.taskmanager.base.Constants
 import com.taskmanager.base.Routes
 import com.taskmanager.data.LocalTaskData
-import com.taskmanager.data.TaskEntity
 
 @Composable
 fun TaskList(
@@ -49,7 +45,7 @@ fun TaskList(
     LaunchedEffect(key1 = listViewModel.tasks) { listViewModel.loadTasks() }
     val tasks by listViewModel.tasks.collectAsState()
     val showAlertDialog by listViewModel.showAlertDialog.collectAsState()
-    var selectItem by remember { mutableStateOf(TaskEntity()) }
+    val selectItem by listViewModel.selectItem.collectAsState()
 
     Column(
         modifier = Modifier
@@ -102,7 +98,7 @@ fun TaskList(
                                 Box(modifier = Modifier) {
                                     Row {
                                         IconButton(onClick = {
-                                            selectItem = task
+                                            listViewModel.setSelectItem(task)
                                             listViewModel.setShowAlertDialog(true)
                                         }) {
                                             Icon(Icons.Default.Delete, contentDescription = null)

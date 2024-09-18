@@ -49,7 +49,7 @@ class CallScaffold(
 ) {
     private val taskAddViewModel by lazy { TaskAddViewModel(navController, localdb, cloudDB, auth) }
     private val taskEditViewModel by lazy { TaskEditViewModel(navController, localTaskData, localdb, cloudDB, auth) }
-    private val taskListViewModel by lazy { TaskListViewModel(localdb, auth) }
+    private val taskListViewModel by lazy { TaskListViewModel(localdb, auth, cloudDB) }
     private val taskdetailViewModel by lazy { TaskDetailViewModel(localTaskData, localdb) }
     private val createAccountViewModel by lazy { CreateAccountViewModel(navController, auth, sessionAuth, cloudDB) }
     private val loginViewModel by lazy { LoginViewModel(navController, auth, sessionAuth) }
