@@ -73,7 +73,6 @@ class CallScaffold(
                 Routes.TaskAdd.route -> TaskAdd(padding, taskAddViewModel)
                 Routes.TaskEdit.route -> TaskEdit(padding, taskEditViewModel)
                 Routes.TaskList.route -> TaskList(padding, navController, taskListViewModel, localTaskData)
-
                 Routes.CreateAccount.route -> CreateAccountScreen(createAccountViewModel)
                 Routes.LoginScreen.route -> LoginScreen(loginViewModel)
                 Routes.WelcomeScreen.route -> WelcomeScreen(welcomeViewModel)
@@ -121,8 +120,13 @@ class CallScaffold(
         IconButton(onClick = {
             sessionAuth.saveAuthenticationStage(destination)
             navController.navigate(destination)
-        }, Modifier.size(30.dp)) {
-            Icon(painter = painterResource(id = R.drawable.logout), contentDescription = null)
+        }
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.logout),
+                contentDescription = null,
+                Modifier.size(30.dp)
+            )
         }
 
 
