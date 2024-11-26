@@ -1,6 +1,7 @@
 package com.taskmanager.activity.viewmodel
 
 import android.util.Log
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -17,8 +18,8 @@ import kotlinx.coroutines.launch
 class TaskAddViewModel(
     private val navController: NavController,
     private val localDB: TaskDatabase,
-    private val cloudDB :FirebaseFirestore,
-    private val auth :FirebaseAuth
+    private val cloudDB: FirebaseFirestore,
+    private val auth: FirebaseAuth
 ) : ViewModel() {
 
     private var _title = MutableStateFlow("")
@@ -30,9 +31,8 @@ class TaskAddViewModel(
     private var _isSaveRequest = MutableStateFlow(false)
     val isSaveRequest: StateFlow<Boolean> = _isSaveRequest
 
-    fun setSaveRequest(value: Boolean) {
-        _isSaveRequest.value = value
-    }
+    private var _colorPallete = MutableStateFlow(0UL)
+    val colorPallette: StateFlow<ULong> = _colorPallete
 
     fun createTask() {
         viewModelScope.launch {
@@ -44,12 +44,19 @@ class TaskAddViewModel(
                 .addOnSuccessListener {
                     Log.i("createTask", "createTask: Cadastro da nota foi realizado com sucesso!")
                 }
-                .addOnFailureListener{ e->
-                    Log.i("createTask", "createTask: Ocorreu o seguinte erro $e ao tentar cadastrar uma nota")
+                .addOnFailureListener { e ->
+                    Log.i(
+                        "createTask",
+                        "createTask: Ocorreu o seguinte erro $e ao tentar cadastrar uma nota"
+                    )
                 }
         }
 
         navigate(Routes.TaskList.route)
+    }
+
+    fun setSaveRequest(value: Boolean) {
+        _isSaveRequest.value = value
     }
 
     private fun navigate(screen: String) {

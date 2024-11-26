@@ -89,4 +89,27 @@ class TaskEditViewModel(
 
         }
     }
+
+    fun loadTask() {
+        viewModelScope.launch {
+            _task.value = localDB.taskdao().getByID(localData.getByID(Constants.TASK_KEY))
+            setTitle(_task.value.title)
+            setContent(_task.value.content)
+        }
+    }
+
+    fun setSaveRequest(value: Boolean) {
+        _isSaveRequest.value = value
+    }
+
+    fun setTitle(title: String) {
+        _title.value = title
+    }
+
+    fun setContent(content: String) {
+        _content.value = content
+    }
+
+
+
 }

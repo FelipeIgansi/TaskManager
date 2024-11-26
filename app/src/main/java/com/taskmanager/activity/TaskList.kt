@@ -1,25 +1,21 @@
 package com.taskmanager.activity
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,12 +24,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.taskmanager.activity.viewmodel.TaskListViewModel
 import com.taskmanager.base.Constants
 import com.taskmanager.base.Routes
 import com.taskmanager.data.LocalTaskData
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TaskList(
     padding: PaddingValues,
@@ -77,17 +75,22 @@ fun TaskList(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(10.dp)
-                                .clickable {
-                                    localTaskData.saveID(Constants.TASK_KEY, task.id)
-                                    navController.navigate(Routes.TaskDetail.route)
-                                }
+                                .combinedClickable(
+                                    onClick = {
+                                        localTaskData.saveID(Constants.TASK_KEY, task.id)
+                                        navController.navigate(Routes.TaskEdit.route)
+                                    },
+                                    onLongClick = {
+                                        listViewModel.setSelectItem(task)
+                                        listViewModel.setShowAlertDialog(true)
+                                    },
+
+                                )
                         ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
+                            Column{
                                 Text(
                                     text = task.title,
+                                    fontSize = 23.sp,
                                     modifier = Modifier.padding(
                                         start = 20.dp,
                                         end = 20.dp,
@@ -95,22 +98,15 @@ fun TaskList(
                                         bottom = 10.dp
                                     )
                                 )
-                                Box(modifier = Modifier) {
-                                    Row {
-                                        IconButton(onClick = {
-                                            listViewModel.setSelectItem(task)
-                                            listViewModel.setShowAlertDialog(true)
-                                        }) {
-                                            Icon(Icons.Default.Delete, contentDescription = null)
-                                        }
-                                        IconButton(onClick = {
-                                            localTaskData.saveID(Constants.TASK_KEY, task.id)
-                                            navController.navigate(Routes.TaskEdit.route)
-                                        }) {
-                                            Icon(Icons.Default.Edit, contentDescription = null)
-                                        }
-                                    }
-                                }
+                                Text(
+                                    text = task.content,
+                                    modifier = Modifier.padding(
+                                        start = 20.dp,
+                                        end = 20.dp,
+                                        top = 10.dp,
+                                        bottom = 10.dp
+                                    )
+                                )
                             }
                         }
                     }
