@@ -6,6 +6,8 @@ plugins {
     kotlin("kapt")
 
     id("com.google.gms.google-services")
+    id("com.google.devtools.ksp")
+
 }
 
 android {
@@ -62,7 +64,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
-    kapt(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
     testImplementation(libs.androidx.room.testing)
     implementation(libs.androidx.room.paging)
 
