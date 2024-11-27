@@ -23,14 +23,12 @@ import com.taskmanager.R
 import com.taskmanager.activity.CreateAccountScreen
 import com.taskmanager.activity.LoginScreen
 import com.taskmanager.activity.TaskAdd
-import com.taskmanager.activity.TaskDetail
 import com.taskmanager.activity.TaskEdit
 import com.taskmanager.activity.TaskList
 import com.taskmanager.activity.WelcomeScreen
 import com.taskmanager.activity.viewmodel.CreateAccountViewModel
 import com.taskmanager.activity.viewmodel.LoginViewModel
 import com.taskmanager.activity.viewmodel.TaskAddViewModel
-import com.taskmanager.activity.viewmodel.TaskDetailViewModel
 import com.taskmanager.activity.viewmodel.TaskEditViewModel
 import com.taskmanager.activity.viewmodel.TaskListViewModel
 import com.taskmanager.activity.viewmodel.WelcomeViewModel
@@ -47,18 +45,55 @@ class CallScaffold(
     private val sessionAuth: SessionAuth,
     private val cloudDB: FirebaseFirestore
 ) {
-    private val taskAddViewModel by lazy { TaskAddViewModel(navController, localdb, cloudDB, auth) }
-    private val taskEditViewModel by lazy { TaskEditViewModel(navController, localTaskData, localdb, cloudDB, auth) }
-    private val taskListViewModel by lazy { TaskListViewModel(localdb, auth, cloudDB) }
-    private val taskdetailViewModel by lazy { TaskDetailViewModel(localTaskData, localdb) }
-    private val createAccountViewModel by lazy { CreateAccountViewModel(navController, auth, sessionAuth, cloudDB) }
-    private val loginViewModel by lazy { LoginViewModel(navController, auth, sessionAuth) }
-    private val welcomeViewModel by lazy { WelcomeViewModel(navController, sessionAuth) }
+    private val taskAddViewModel by lazy {
+        TaskAddViewModel(
+            navController,
+            localdb,
+            cloudDB,
+            auth
+        )
+    }
+    private val taskEditViewModel by lazy {
+        TaskEditViewModel(
+            navController,
+            localTaskData,
+            localdb,
+            cloudDB,
+            auth
+        )
+    }
+    private val taskListViewModel by lazy {
+        TaskListViewModel(
+            localdb,
+            auth,
+            cloudDB
+        )
+    }
+    private val createAccountViewModel by lazy {
+        CreateAccountViewModel(
+            navController,
+            auth,
+            sessionAuth,
+            cloudDB
+        )
+    }
+    private val loginViewModel by lazy {
+        LoginViewModel(
+            navController,
+            auth,
+            sessionAuth
+        )
+    }
+    private val welcomeViewModel by lazy {
+        WelcomeViewModel(
+            navController,
+            sessionAuth
+        )
+    }
 
     @Composable
     fun buildScreen(screen: String): PaddingValues {
         val viewModel = when (screen) {
-            Routes.TaskDetail.route -> taskdetailViewModel
             Routes.TaskAdd.route -> taskAddViewModel
             Routes.TaskEdit.route -> taskEditViewModel
             Routes.TaskList.route -> taskListViewModel
@@ -69,13 +104,34 @@ class CallScaffold(
         }
         Scaffold(topBar = { CustomTopAppBar(screen = screen, viewModel = viewModel) }) { padding ->
             when (screen) {
-                Routes.TaskDetail.route -> TaskDetail(padding, taskdetailViewModel)
-                Routes.TaskAdd.route -> TaskAdd(padding, taskAddViewModel)
-                Routes.TaskEdit.route -> TaskEdit(padding, taskEditViewModel)
-                Routes.TaskList.route -> TaskList(padding, navController, taskListViewModel, localTaskData)
-                Routes.CreateAccount.route -> CreateAccountScreen(createAccountViewModel)
-                Routes.LoginScreen.route -> LoginScreen(loginViewModel)
-                Routes.WelcomeScreen.route -> WelcomeScreen(welcomeViewModel)
+                Routes.TaskAdd.route -> TaskAdd(
+                    padding,
+                    taskAddViewModel
+                )
+
+                Routes.TaskEdit.route -> TaskEdit(
+                    padding,
+                    taskEditViewModel
+                )
+
+                Routes.TaskList.route -> TaskList(
+                    padding,
+                    navController,
+                    taskListViewModel,
+                    localTaskData
+                )
+
+                Routes.CreateAccount.route -> CreateAccountScreen(
+                    createAccountViewModel
+                )
+
+                Routes.LoginScreen.route -> LoginScreen(
+                    loginViewModel
+                )
+
+                Routes.WelcomeScreen.route -> WelcomeScreen(
+                    welcomeViewModel
+                )
             }
         }
         return PaddingValues()
@@ -95,8 +151,14 @@ class CallScaffold(
         CenterAlignedTopAppBar(title = { Text(text = title) },
             actions = {
                 when (viewModel) {
-                    is TaskAddViewModel -> ButtonSave(onSaveClick = { taskAddViewModel.setSaveRequest(true) })
-                    is TaskEditViewModel -> ButtonSave(onSaveClick = { taskEditViewModel.setSaveRequest(true) })
+                    is TaskAddViewModel -> ButtonSave(onSaveClick = {
+                        taskAddViewModel.setSaveRequest(true)
+                    })
+
+                    is TaskEditViewModel -> ButtonSave(onSaveClick = {
+                        taskEditViewModel.setSaveRequest(true)
+                    })
+
                     is TaskListViewModel -> ButtonLogout(Routes.WelcomeScreen.route)
                 }
             },
@@ -104,7 +166,6 @@ class CallScaffold(
                 when (viewModel) {
                     is TaskAddViewModel,
                     is TaskEditViewModel,
-                    is TaskDetailViewModel,
                     is CreateAccountViewModel,
                     is LoginViewModel -> {
                         IconButton(onClick = { navController.navigateUp() }) {

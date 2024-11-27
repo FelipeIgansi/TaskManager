@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.taskmanager.base.Constants
 
-@Database(entities = [TaskEntity::class], version = 2)
+@Database(entities = [TaskEntity::class], version = 3)
 abstract class TaskDatabase : RoomDatabase() {
     abstract  fun taskdao() : Taskdao
 
