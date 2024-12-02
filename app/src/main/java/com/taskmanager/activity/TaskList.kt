@@ -1,5 +1,14 @@
 package com.taskmanager.activity
 
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateValue
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,11 +19,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -24,6 +35,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -45,6 +65,39 @@ fun TaskList(
     val tasks by listViewModel.tasks.collectAsState()
     val showAlertDialog by listViewModel.showAlertDialog.collectAsState()
     val selectItem by listViewModel.selectItem.collectAsState()
+
+
+    val transition = rememberInfiniteTransition(label = "")
+    val borderProgress = transition.animateFloat(
+        initialValue = 0.5f,
+        targetValue = 1.5f,
+        animationSpec = infiniteRepeatable(
+            repeatMode = RepeatMode.Reverse,
+            animation = tween(1200, easing = LinearEasing)
+        ),
+        label = ""
+    )
+
+    val fabBorderAnimeteColor = transition.animateColor(
+        initialValue = Color.Red,
+        targetValue = Color.Green,
+        animationSpec = infiniteRepeatable(
+            repeatMode = RepeatMode.Reverse,
+            animation = tween(2000)
+        ),
+        label = ""
+    )
+
+    val animateCornerRadius = transition.animateValue(
+        initialValue = 10.dp,
+        targetValue = 15.dp,
+        typeConverter = Dp.VectorConverter,
+        animationSpec = infiniteRepeatable(
+            repeatMode = RepeatMode.Reverse,
+            animation = tween(1500)
+        ),
+        label = ""
+    )
 
     Column(
         modifier = Modifier
@@ -73,9 +126,36 @@ fun TaskList(
                 tasks.forEach { task ->
                     item {
                         Card(
+                            colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(10.dp)
+
+                                .drawBehind {
+                                    // Desenhar o gradiente animado como borda
+                                    val borderThickness = 5.dp.toPx()
+
+                                    drawRoundRect(
+                                        brush = Brush.linearGradient(
+                                            colors = listOf(
+                                                Color.Red,
+                                                Color.Yellow,
+                                                Color.Green,
+                                            ),
+                                            start = Offset(0f, 0f),
+                                            end = Offset(
+                                                size.width * borderProgress.value,
+                                                size.height
+                                            )
+                                        ),
+                                        size = Size(size.width, size.height),
+                                        style = Stroke(
+                                            width = borderThickness,
+                                            cap = StrokeCap.Round
+                                        ),
+                                        cornerRadius = CornerRadius(10.dp.toPx())
+                                    )
+                                }
                                 .combinedClickable(
                                     onClick = {
                                         localTaskData.saveID(Constants.TASK_KEY, task.id)
@@ -84,9 +164,7 @@ fun TaskList(
                                     onLongClick = {
                                         listViewModel.setSelectItem(task)
                                         listViewModel.setShowAlertDialog(true)
-                                    },
-
-                                    )
+                                    })
                         ) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
@@ -131,8 +209,12 @@ fun TaskList(
             .padding(10.dp),
         contentAlignment = Alignment.BottomEnd
     ) {
-        FloatingActionButton(onClick = { navController.navigate(Routes.TaskAdd.route) }) {
-            Icon(Icons.Default.Add, contentDescription = null)
+        FloatingActionButton(
+            onClick = { navController.navigate(Routes.TaskAdd.route) },
+            containerColor = fabBorderAnimeteColor.value,
+            shape = RoundedCornerShape(animateCornerRadius.value)
+        ) {
+            Icon(Icons.Default.Add, contentDescription = null, tint = Color.Black)
         }
     }
 

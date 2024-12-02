@@ -102,7 +102,10 @@ class CallScaffold(
             Routes.WelcomeScreen.route -> welcomeViewModel
             else -> throw IllegalArgumentException(" Não foi encontrada a tela $screen")
         }
-        Scaffold(topBar = { CustomTopAppBar(screen = screen, viewModel = viewModel) }) { padding ->
+        Scaffold(
+            topBar = { CustomTopAppBar(screen = screen, viewModel = viewModel) })
+        {
+            padding ->
             when (screen) {
                 Routes.TaskAdd.route -> TaskAdd(
                     padding,
@@ -148,7 +151,8 @@ class CallScaffold(
             else -> ""
         }
 
-        CenterAlignedTopAppBar(title = { Text(text = title) },
+        CenterAlignedTopAppBar(
+            title = { Text(text = title) },
             actions = {
                 when (viewModel) {
                     is TaskAddViewModel -> ButtonSave(onSaveClick = {
@@ -173,7 +177,8 @@ class CallScaffold(
                         }
                     }
                 }
-            })
+            }
+        )
     }
 
     @Composable
@@ -186,7 +191,7 @@ class CallScaffold(
             Icon(
                 painter = painterResource(id = R.drawable.logout),
                 contentDescription = null,
-                Modifier.size(30.dp)
+                Modifier.size(25.dp)
             )
         }
 
