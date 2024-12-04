@@ -1,6 +1,7 @@
 package com.taskmanager.activity
 
 import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.VectorConverter
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -27,6 +29,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -73,28 +76,28 @@ fun TaskList(
         targetValue = 1.5f,
         animationSpec = infiniteRepeatable(
             repeatMode = RepeatMode.Reverse,
-            animation = tween(1200, easing = LinearEasing)
+            animation = tween(durationMillis = 1000, easing = LinearEasing)
         ),
         label = ""
     )
 
     val fabBorderAnimeteColor = transition.animateColor(
-        initialValue = Color.Red,
-        targetValue = Color.Green,
+        initialValue = Color.Blue,
+        targetValue = Color.Magenta,
         animationSpec = infiniteRepeatable(
             repeatMode = RepeatMode.Reverse,
-            animation = tween(2000)
+            animation = tween(durationMillis = 2000, easing = FastOutSlowInEasing)
         ),
         label = ""
     )
 
-    val animateCornerRadius = transition.animateValue(
-        initialValue = 10.dp,
-        targetValue = 15.dp,
+    val animateSizeButton = transition.animateValue(
+        initialValue = 60.dp,
+        targetValue = 65.dp,
         typeConverter = Dp.VectorConverter,
         animationSpec = infiniteRepeatable(
             repeatMode = RepeatMode.Reverse,
-            animation = tween(1500)
+            animation = tween(800, easing = LinearEasing)
         ),
         label = ""
     )
@@ -212,9 +215,11 @@ fun TaskList(
         FloatingActionButton(
             onClick = { navController.navigate(Routes.TaskAdd.route) },
             containerColor = fabBorderAnimeteColor.value,
-            shape = RoundedCornerShape(animateCornerRadius.value)
+            shape = RoundedCornerShape(10.dp),
+            elevation = FloatingActionButtonDefaults.elevation(10.dp),
+            modifier = Modifier.size(animateSizeButton.value)
         ) {
-            Icon(Icons.Default.Add, contentDescription = null, tint = Color.Black)
+            Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
         }
     }
 

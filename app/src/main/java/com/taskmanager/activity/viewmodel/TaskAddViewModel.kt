@@ -49,7 +49,10 @@ class TaskAddViewModel(
 
             cloudDB.collection("tasks").add(taskModel)
                 .addOnSuccessListener {
-                    Log.i("createTask", "createTask: Cadastro da nota foi realizado com sucesso!")
+                    Log.i(
+                        "createTask",
+                        "createTask: Cadastro da nota foi realizado com sucesso!"
+                    )
                 }
                 .addOnFailureListener { e ->
                     Log.i(
