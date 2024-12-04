@@ -17,18 +17,25 @@ import kotlinx.coroutines.launch
 class TaskAddViewModel(
     private val navController: NavController,
     private val localDB: TaskDatabase,
-    private val cloudDB :FirebaseFirestore,
-    private val auth :FirebaseAuth
+    private val cloudDB: FirebaseFirestore,
+    private val auth: FirebaseAuth
 ) : ViewModel() {
 
     private var _title = MutableStateFlow("")
-    val title: StateFlow<String?> = _title
+    val title: StateFlow<String> = _title
 
     private var _content = MutableStateFlow("")
-    val content: StateFlow<String?> = _content
+    val content: StateFlow<String> = _content
 
     private var _isSaveRequest = MutableStateFlow(false)
     val isSaveRequest: StateFlow<Boolean> = _isSaveRequest
+
+    private var _buttonSaveIsEnabled = MutableStateFlow(false)
+    val buttonSaveIsEnabled: StateFlow<Boolean> = _buttonSaveIsEnabled
+
+    fun setButtonSaveState() {
+        _buttonSaveIsEnabled.value = _title.value.isNotEmpty() || _content.value.isNotEmpty()
+    }
 
     fun setSaveRequest(value: Boolean) {
         _isSaveRequest.value = value
@@ -44,8 +51,11 @@ class TaskAddViewModel(
                 .addOnSuccessListener {
                     Log.i("createTask", "createTask: Cadastro da nota foi realizado com sucesso!")
                 }
-                .addOnFailureListener{ e->
-                    Log.i("createTask", "createTask: Ocorreu o seguinte erro $e ao tentar cadastrar uma nota")
+                .addOnFailureListener { e ->
+                    Log.i(
+                        "createTask",
+                        "createTask: Ocorreu o seguinte erro $e ao tentar cadastrar uma nota"
+                    )
                 }
         }
 

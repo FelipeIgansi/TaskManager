@@ -1,5 +1,7 @@
 package com.taskmanager.base
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -12,7 +14,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -104,8 +108,7 @@ class CallScaffold(
         }
         Scaffold(
             topBar = { CustomTopAppBar(screen = screen, viewModel = viewModel) })
-        {
-            padding ->
+        { padding ->
             when (screen) {
                 Routes.TaskAdd.route -> TaskAdd(
                     padding,
@@ -142,7 +145,7 @@ class CallScaffold(
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun CustomTopAppBar(screen: String, viewModel: ViewModel) {
+    private fun CustomTopAppBar(screen: String, viewModel: ViewModel) {
         val title = when (screen) {
             Routes.TaskAdd.route -> Constants.TOPAPPBARHEADER.CREATETASKTEXT
             Routes.TaskEdit.route -> Constants.TOPAPPBARHEADER.EDITTASKTEXT
@@ -155,13 +158,14 @@ class CallScaffold(
             title = { Text(text = title) },
             actions = {
                 when (viewModel) {
-                    is TaskAddViewModel -> ButtonSave(onSaveClick = {
-                        taskAddViewModel.setSaveRequest(true)
-                    })
+                    is TaskAddViewModel -> ButtonSave(
+                        onSaveClick = { taskAddViewModel.setSaveRequest(true) },
+                        isEnabled = taskAddViewModel.buttonSaveIsEnabled.collectAsState().value
+                    )
 
-                    is TaskEditViewModel -> ButtonSave(onSaveClick = {
-                        taskEditViewModel.setSaveRequest(true)
-                    })
+                    is TaskEditViewModel -> ButtonSave(
+                        onSaveClick = { taskEditViewModel.setSaveRequest(true) }
+                    )
 
                     is TaskListViewModel -> ButtonLogout(Routes.WelcomeScreen.route)
                 }
@@ -182,7 +186,7 @@ class CallScaffold(
     }
 
     @Composable
-    fun ButtonLogout(destination: String) =
+    private fun ButtonLogout(destination: String) =
         IconButton(onClick = {
             sessionAuth.saveAuthenticationStage(destination)
             navController.navigate(destination)
@@ -197,12 +201,21 @@ class CallScaffold(
 
 
     @Composable
-    fun ButtonSave(onSaveClick: () -> Unit) {
-        IconButton(onClick = onSaveClick) {
+    private fun ButtonSave(onSaveClick: () -> Unit, isEnabled: Boolean = true) {
+        val iconColor = animateColorAsState(
+            targetValue = if (isEnabled) DarkGreen else Color.Gray,
+            animationSpec = tween(800),
+            label = ""
+        )
+
+        IconButton(
+            onClick = onSaveClick,
+            enabled = isEnabled
+        ) {
             Icon(
                 Icons.Default.Done,
                 contentDescription = null,
-                tint = DarkGreen,
+                tint = iconColor.value,
                 modifier = Modifier.size(25.dp)
             )
         }

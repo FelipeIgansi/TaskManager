@@ -27,7 +27,7 @@ fun TaskEdit(
     taskEditViewModel: TaskEditViewModel
 ) {
 
-    LaunchedEffect(key1 = taskEditViewModel.task) { taskEditViewModel.loadTask() }
+    LaunchedEffect(taskEditViewModel.task) { taskEditViewModel.loadTask() }
 
     val title by taskEditViewModel.title.collectAsState()
     val content by taskEditViewModel.content.collectAsState()

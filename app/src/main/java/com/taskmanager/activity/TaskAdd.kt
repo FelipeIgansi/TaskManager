@@ -14,8 +14,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.taskmanager.base.Constants
 import com.taskmanager.activity.viewmodel.TaskAddViewModel
+import com.taskmanager.base.Constants
 
 
 @Composable
@@ -30,14 +30,17 @@ fun TaskAdd(
 
     LaunchedEffect(saveRequest) { if (saveRequest) taskAddViewModel.createTask() }
 
+    LaunchedEffect((title.isNotEmpty() || content.isNotEmpty())) {
+        taskAddViewModel.setButtonSaveState()}
+
     Column(
         modifier = Modifier
             .padding(padding)
             .padding(top = 20.dp, start = 10.dp, end = 10.dp)
     ) {
         OutlinedTextField(
-            value = title?:"",
-            onValueChange = {taskAddViewModel.setTitle(it)},
+            value = title,
+            onValueChange = { taskAddViewModel.setTitle(it) },
             placeholder = { Text(Constants.TITLE) },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
@@ -46,8 +49,8 @@ fun TaskAdd(
             ),
         )
         OutlinedTextField(
-            value = content?:"",
-            onValueChange = { taskAddViewModel.setContent(it)},
+            value = content,
+            onValueChange = { taskAddViewModel.setContent(it) },
             placeholder = { Text(Constants.DESCRIPTION) },
             modifier = Modifier
                 .fillMaxWidth()
