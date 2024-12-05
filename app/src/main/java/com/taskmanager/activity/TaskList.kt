@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -34,6 +36,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -54,6 +57,7 @@ import com.taskmanager.activity.viewmodel.TaskListViewModel
 import com.taskmanager.base.Constants
 import com.taskmanager.base.Routes
 import com.taskmanager.data.LocalTaskData
+import com.taskmanager.data.TaskEntity
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -68,6 +72,7 @@ fun TaskList(
     val tasks by listViewModel.tasks.collectAsState()
     val showAlertDialog by listViewModel.showAlertDialog.collectAsState()
     val selectItem by listViewModel.selectItem.collectAsState()
+    val isListIconSelected by listViewModel.isListIconSelected.collectAsState()
 
 
     val transition = rememberInfiniteTransition(label = "")
@@ -125,75 +130,31 @@ fun TaskList(
             )
         }
         if (tasks.isNotEmpty()) {
-            LazyColumn {
-                tasks.forEach { task ->
-                    item {
-                        Card(
-                            colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp)
-
-                                .drawBehind {
-                                    // Desenhar o gradiente animado como borda
-                                    val borderThickness = 5.dp.toPx()
-
-                                    drawRoundRect(
-                                        brush = Brush.linearGradient(
-                                            colors = listOf(
-                                                Color.Red,
-                                                Color.Yellow,
-                                                Color.Green,
-                                            ),
-                                            start = Offset(0f, 0f),
-                                            end = Offset(
-                                                size.width * borderProgress.value,
-                                                size.height
-                                            )
-                                        ),
-                                        size = Size(size.width, size.height),
-                                        style = Stroke(
-                                            width = borderThickness,
-                                            cap = StrokeCap.Round
-                                        ),
-                                        cornerRadius = CornerRadius(10.dp.toPx())
-                                    )
-                                }
-                                .combinedClickable(
-                                    onClick = {
-                                        localTaskData.saveID(Constants.TASK_KEY, task.id)
-                                        navController.navigate(Routes.TaskEdit.route)
-                                    },
-                                    onLongClick = {
-                                        listViewModel.setSelectItem(task)
-                                        listViewModel.setShowAlertDialog(true)
-                                    })
-                        ) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = task.title,
-                                    fontSize = 23.sp,
-                                    modifier = Modifier.padding(
-                                        start = 20.dp,
-                                        end = 20.dp,
-                                        top = 10.dp,
-                                        bottom = 10.dp
-                                    )
-                                )
-                                Text(
-                                    text = task.content,
-                                    modifier = Modifier.padding(
-                                        start = 20.dp,
-                                        end = 20.dp,
-                                        top = 10.dp,
-                                        bottom = 10.dp
-                                    )
-                                )
-
-                            }
+            if (isListIconSelected) {
+                LazyColumn {
+                    tasks.forEach { task ->
+                        item {
+                            CardComponent(
+                                borderProgress,
+                                localTaskData,
+                                task,
+                                navController,
+                                listViewModel
+                            )
+                        }
+                    }
+                }
+            } else {
+                LazyVerticalGrid(columns = GridCells.Fixed(2)) {
+                    tasks.forEach { task ->
+                        item {
+                            CardComponent(
+                                borderProgress,
+                                localTaskData,
+                                task,
+                                navController,
+                                listViewModel
+                            )
                         }
                     }
                 }
@@ -223,4 +184,82 @@ fun TaskList(
         }
     }
 
+}
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun CardComponent(
+    borderProgress: State<Float>,
+    localTaskData: LocalTaskData,
+    task: TaskEntity,
+    navController: NavHostController,
+    listViewModel: TaskListViewModel
+) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+
+            .drawBehind {
+                // Desenhar o gradiente animado como borda
+                val borderThickness = 5.dp.toPx()
+
+                drawRoundRect(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color.Red,
+                            Color.Yellow,
+                            Color.Green,
+                        ),
+                        start = Offset(0f, 0f),
+                        end = Offset(
+                            size.width * borderProgress.value,
+                            size.height
+                        )
+                    ),
+                    size = Size(size.width, size.height),
+                    style = Stroke(
+                        width = borderThickness,
+                        cap = StrokeCap.Round
+                    ),
+                    cornerRadius = CornerRadius(10.dp.toPx())
+                )
+            }
+            .combinedClickable(
+                onClick = {
+                    localTaskData.saveID(Constants.TASK_KEY, task.id)
+                    navController.navigate(Routes.TaskEdit.route)
+                },
+                onLongClick = {
+                    listViewModel.setSelectItem(task)
+                    listViewModel.setShowAlertDialog(true)
+                })
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = task.title,
+                fontSize = 23.sp,
+                modifier = Modifier.padding(
+                    start = 20.dp,
+                    end = 20.dp,
+                    top = 10.dp,
+                    bottom = 10.dp
+                )
+            )
+            Text(
+                text = task.content,
+                modifier = Modifier.padding(
+                    start = 20.dp,
+                    end = 20.dp,
+                    top = 10.dp,
+                    bottom = 10.dp
+                )
+            )
+
+        }
+    }
 }

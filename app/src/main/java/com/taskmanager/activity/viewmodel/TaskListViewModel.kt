@@ -15,7 +15,7 @@ import kotlinx.coroutines.tasks.await
 
 class TaskListViewModel(
     private val localDB: TaskDatabase,
-    private val auth: FirebaseAuth,
+    auth: FirebaseAuth,
     private val cloudDB: FirebaseFirestore
 ) : ViewModel() {
 
@@ -27,6 +27,14 @@ class TaskListViewModel(
 
     private var _selectItem = MutableStateFlow(TaskEntity())
     val selectItem: StateFlow<TaskEntity> = _selectItem
+
+    private var _isListIconSelected = MutableStateFlow(false)
+    val isListIconSelected: StateFlow<Boolean> = _isListIconSelected
+
+
+    fun setIsListIconSelected(value: Boolean) {
+        _isListIconSelected.value = value
+    }
 
     fun setSelectItem(value: TaskEntity) {
         _selectItem.value = value
