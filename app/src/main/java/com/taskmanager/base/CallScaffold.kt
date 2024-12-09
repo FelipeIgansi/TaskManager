@@ -1,7 +1,6 @@
 package com.taskmanager.base
 
 import androidx.compose.animation.animateColor
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -22,8 +21,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,7 +52,7 @@ import com.taskmanager.activity.viewmodel.WelcomeViewModel
 import com.taskmanager.data.LocalTaskData
 import com.taskmanager.data.SessionAuth
 import com.taskmanager.data.TaskDatabase
-import com.taskmanager.theme.DarkGreen
+import kotlinx.coroutines.delay
 
 class CallScaffold(
     private val navController: NavHostController,
@@ -156,6 +159,7 @@ class CallScaffold(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun CustomTopAppBar(screen: String, viewModel: ViewModel) {
+        var displayedText by remember { mutableStateOf("") }
         val title = when (screen) {
             Routes.TaskAdd.route -> Constants.TOPAPPBARHEADER.CREATETASKTEXT
             Routes.TaskEdit.route -> Constants.TOPAPPBARHEADER.EDITTASKTEXT
@@ -163,9 +167,15 @@ class CallScaffold(
             Routes.TaskDetail.route -> Constants.TOPAPPBARHEADER.DETAILTASKTEXT
             else -> ""
         }
+        LaunchedEffect(Unit) {
+            title.forEach { c ->
+                displayedText += c.toString()
+                delay(120L)
+            }
+        }
 
         CenterAlignedTopAppBar(
-            title = { Text(text = title) },
+            title = { Text(text = displayedText) },
             actions = {
                 when (viewModel) {
                     is TaskAddViewModel -> ButtonSave(
