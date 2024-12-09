@@ -259,9 +259,14 @@ class CallScaffold(
 
     @Composable
     private fun ButtonSave(onSaveClick: () -> Unit, isEnabled: Boolean = true) {
-        val iconColor = animateColorAsState(
-            targetValue = if (isEnabled) DarkGreen else Color.Gray,
-            animationSpec = tween(800),
+        val transition = rememberInfiniteTransition(label = "")
+        val colorAnitated = transition.animateColor(
+            initialValue = Color.Green,
+            targetValue = Color.Blue,
+            animationSpec = infiniteRepeatable(
+                repeatMode = RepeatMode.Reverse,
+                animation = tween(600)
+            ),
             label = ""
         )
 
@@ -272,8 +277,8 @@ class CallScaffold(
             Icon(
                 Icons.Default.Done,
                 contentDescription = null,
-                tint = iconColor.value,
-                modifier = Modifier.size(25.dp)
+                tint = if (isEnabled) colorAnitated.value else Color.Gray,
+                modifier = Modifier.size(30.dp),
             )
         }
     }
