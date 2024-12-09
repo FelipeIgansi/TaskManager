@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.taskmanager.base.Constants
 import com.taskmanager.data.TaskDatabase
 import com.taskmanager.data.TaskEntity
 import kotlinx.coroutines.Dispatchers
@@ -45,21 +46,29 @@ class TaskListViewModel(
 
     fun loadTasks() {
         viewModelScope.launch {
-            _tasks.value = localDB.taskdao().getAll(uuid)
+            setListTasks(localDB.taskdao().getAll(uuid))
         }
+    }
+    fun setListTasks(tasks:List<TaskEntity>){
+        _tasks.value = tasks
     }
 
     fun deleteTask(task: TaskEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val querySnapshot =
-                    cloudDB.collection("tasks").whereEqualTo("uuid", uuid).get().await()
+                val querySnapshot = cloudDB.collection(Constants.DATABASE.FIREBASE.TASKDATABASENAME)
+                    .whereEqualTo("uuid", uuid)
+                    .get()
+                    .await()
+
                 val taskID = querySnapshot.documents.first().id
 
-                if (taskID.isNotEmpty()) cloudDB.collection("tasks").document(taskID).delete()
+                if (taskID.isNotEmpty()) cloudDB.collection(Constants.DATABASE.FIREBASE.TASKDATABASENAME)
+                    .document(taskID)
+                    .delete()
 
                 localDB.taskdao().delete(task)
-                _tasks.value = localDB.taskdao().getAll(uuid)
+                setListTasks(localDB.taskdao().getAll(uuid))
 
                 viewModelScope.launch(Dispatchers.Main) {
                     _showAlertDialog.value = false

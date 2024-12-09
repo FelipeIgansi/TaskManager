@@ -68,11 +68,15 @@ class TaskEditViewModel(
                     content = _content.value,
                     uuid = uuid
                 )
-                val querySnapshot =
-                    cloudDB.collection("tasks").whereEqualTo("uuid", uuid).get().await()
+                val querySnapshot = cloudDB.collection(Constants.DATABASE.FIREBASE.TASKDATABASENAME)
+                        .whereEqualTo("uuid", uuid)
+                        .get()
+                        .await()
                 val taskID = querySnapshot.documents.first().id
 
-                if (taskID.isNotEmpty()) cloudDB.collection("tasks").document(taskID)
+                if (taskID.isNotEmpty())
+                    cloudDB.collection(Constants.DATABASE.FIREBASE.TASKDATABASENAME)
+                    .document(taskID)
                     .set(mapTaskValues)
 
                 localDB.taskdao()

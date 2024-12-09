@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taskmanager.activity.TaskModel
+import com.taskmanager.base.Constants
 import com.taskmanager.base.Routes
 import com.taskmanager.data.TaskDatabase
 import com.taskmanager.data.TaskEntity
@@ -47,7 +48,7 @@ class TaskAddViewModel(
             val taskModel = TaskModel(title = _title.value, content = _content.value, uuid = uuid)
             localDB.taskdao().insertAll(TaskEntity(0, _title.value, _content.value, uuid))
 
-            cloudDB.collection("tasks").add(taskModel)
+            cloudDB.collection(Constants.DATABASE.FIREBASE.TASKDATABASENAME).add(taskModel)
                 .addOnSuccessListener {
                     Log.i(
                         "createTask",

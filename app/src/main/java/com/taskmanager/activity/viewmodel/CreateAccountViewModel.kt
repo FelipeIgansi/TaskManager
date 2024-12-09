@@ -72,19 +72,19 @@ class CreateAccountViewModel(
 
                     }
                     .addOnSuccessListener {
-                        val destination = Routes.TaskList.route
+                        val destination = Routes.SyncDatabaseScreen.route
                         sessionAuth.saveAuthenticationStage(destination)
                         navController.navigate(destination)
                     }
             }
-        } else setMsgError(Constants.DATABASE.FIREBASE.MISSINGEMAILORPASSWORD)
+        } else setMsgError(Constants.DATABASE.FIREBASE.EXCEPTIONS.MISSINGEMAILORPASSWORD)
     }
 
     private fun verifyErrorMessage(exception: Exception) = when (exception) {
-        is FirebaseAuthWeakPasswordException -> Constants.DATABASE.FIREBASE.WEAKPASSWORDEXCEPTION
-        is FirebaseAuthInvalidCredentialsException -> Constants.DATABASE.FIREBASE.INVALIDCREDENTIALSEXCEPTION
-        is FirebaseAuthUserCollisionException -> Constants.DATABASE.FIREBASE.COLLISIONEXCEPTION
-        else -> Constants.DATABASE.FIREBASE.GENERICERROR
+        is FirebaseAuthWeakPasswordException -> Constants.DATABASE.FIREBASE.EXCEPTIONS.WEAKPASSWORDEXCEPTION
+        is FirebaseAuthInvalidCredentialsException -> Constants.DATABASE.FIREBASE.EXCEPTIONS.INVALIDCREDENTIALSEXCEPTION
+        is FirebaseAuthUserCollisionException -> Constants.DATABASE.FIREBASE.EXCEPTIONS.COLLISIONEXCEPTION
+        else -> Constants.DATABASE.FIREBASE.EXCEPTIONS.GENERICERROR
     }
 
     private fun saveOnCloudDB(mapUser: UserModel) {

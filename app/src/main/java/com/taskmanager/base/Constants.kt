@@ -7,14 +7,16 @@ class Constants {
         const val SEMREGISTROMSG = "Não há tarefas salvas"
         const val TASK_KEY = "task_key"
     }
-    object AUTHENTICATION{
+
+    object AUTHENTICATION {
         const val KEYSESSION = "keySession"
         const val REGISTER = "Register"
         const val EMAIL = "E-mail"
-        const val PASSWORD ="Password"
+        const val PASSWORD = "Password"
         const val LOGIN = "Login"
     }
-    object WELCOMESCREEN{
+
+    object WELCOMESCREEN {
         const val WELCOMETEXT = "Bem vindo(a)!"
         const val PHRASE = "Tenha todas as suas notas em um só lugar!"
         const val REGISTER = "Cadastrar"
@@ -42,15 +44,20 @@ class Constants {
         const val CREATEACCOUNT = "create_screen"
         const val LOGINSCREEN = "login_screen"
         const val WELCOMESCREEN = "welcome_screen"
+        const val SYNCDATABASESCREEN = "sync_database_screen"
     }
 
     object DATABASE {
         object FIREBASE {
-            const val WEAKPASSWORDEXCEPTION = "A senha deve ter pelo menos 6 caracteres!"
-            const val INVALIDCREDENTIALSEXCEPTION = "O email está incorreto!"
-            const val COLLISIONEXCEPTION = "Este email já está cadastrado!"
-            const val GENERICERROR = "Seu email ou senha não está correto!"
-            const val MISSINGEMAILORPASSWORD ="Informe um email e senha."
+            object EXCEPTIONS {
+                const val WEAKPASSWORDEXCEPTION = "A senha deve ter pelo menos 6 caracteres!"
+                const val INVALIDCREDENTIALSEXCEPTION = "O email está incorreto!"
+                const val COLLISIONEXCEPTION = "Este email já está cadastrado!"
+                const val GENERICERROR = "Seu email ou senha não está correto!"
+                const val MISSINGEMAILORPASSWORD = "Informe um email e senha."
+            }
+
+            const val TASKDATABASENAME = "tasks"
         }
 
         const val SHAREDPREFERENCESNAME = "locataskdata"

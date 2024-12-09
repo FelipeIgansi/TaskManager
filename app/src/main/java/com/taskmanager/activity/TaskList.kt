@@ -36,7 +36,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -76,7 +75,7 @@ fun TaskList(
 
 
     val transition = rememberInfiniteTransition(label = "")
-    val borderProgress = transition.animateFloat(
+    val borderProgress by transition.animateFloat(
         initialValue = 0.5f,
         targetValue = 1.5f,
         animationSpec = infiniteRepeatable(
@@ -86,7 +85,7 @@ fun TaskList(
         label = ""
     )
 
-    val fabBorderAnimeteColor = transition.animateColor(
+    val fabBorderAnimeteColor by transition.animateColor(
         initialValue = Color.Blue,
         targetValue = Color.Magenta,
         animationSpec = infiniteRepeatable(
@@ -96,7 +95,7 @@ fun TaskList(
         label = ""
     )
 
-    val animateSizeButton = transition.animateValue(
+    val animateSizeButton by transition.animateValue(
         initialValue = 60.dp,
         targetValue = 65.dp,
         typeConverter = Dp.VectorConverter,
@@ -107,6 +106,7 @@ fun TaskList(
         label = ""
     )
 
+    listViewModel.setListTasks(tasks.sortedBy { it.title })
     Column(
         modifier = Modifier
             .padding(padding)
@@ -175,10 +175,10 @@ fun TaskList(
     ) {
         FloatingActionButton(
             onClick = { navController.navigate(Routes.TaskAdd.route) },
-            containerColor = fabBorderAnimeteColor.value,
+            containerColor = fabBorderAnimeteColor,
             shape = RoundedCornerShape(10.dp),
             elevation = FloatingActionButtonDefaults.elevation(10.dp),
-            modifier = Modifier.size(animateSizeButton.value)
+            modifier = Modifier.size(animateSizeButton)
         ) {
             Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
         }
@@ -189,7 +189,7 @@ fun TaskList(
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 private fun CardComponent(
-    borderProgress: State<Float>,
+    borderProgress: Float,
     localTaskData: LocalTaskData,
     task: TaskEntity,
     navController: NavHostController,
@@ -214,7 +214,7 @@ private fun CardComponent(
                         ),
                         start = Offset(0f, 0f),
                         end = Offset(
-                            size.width * borderProgress.value,
+                            size.width * borderProgress,
                             size.height
                         )
                     ),

@@ -36,12 +36,14 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.taskmanager.R
 import com.taskmanager.activity.CreateAccountScreen
 import com.taskmanager.activity.LoginScreen
+import com.taskmanager.activity.SyncDatabaseScreen
 import com.taskmanager.activity.TaskAdd
 import com.taskmanager.activity.TaskEdit
 import com.taskmanager.activity.TaskList
 import com.taskmanager.activity.WelcomeScreen
 import com.taskmanager.activity.viewmodel.CreateAccountViewModel
 import com.taskmanager.activity.viewmodel.LoginViewModel
+import com.taskmanager.activity.viewmodel.SyncDatabaseViewModel
 import com.taskmanager.activity.viewmodel.TaskAddViewModel
 import com.taskmanager.activity.viewmodel.TaskEditViewModel
 import com.taskmanager.activity.viewmodel.TaskListViewModel
@@ -57,52 +59,29 @@ class CallScaffold(
     private val localdb: TaskDatabase,
     private val auth: FirebaseAuth,
     private val sessionAuth: SessionAuth,
-    private val cloudDB: FirebaseFirestore
+    private val cloudDB: FirebaseFirestore,
 ) {
     private val taskAddViewModel by lazy {
-        TaskAddViewModel(
-            navController,
-            localdb,
-            cloudDB,
-            auth
-        )
+        TaskAddViewModel(navController, localdb, cloudDB, auth)
     }
     private val taskEditViewModel by lazy {
-        TaskEditViewModel(
-            navController,
-            localTaskData,
-            localdb,
-            cloudDB,
-            auth
-        )
+        TaskEditViewModel(navController, localTaskData, localdb, cloudDB, auth)
     }
     private val taskListViewModel by lazy {
-        TaskListViewModel(
-            localdb,
-            auth,
-            cloudDB
-        )
+        TaskListViewModel(localdb, auth, cloudDB)
     }
     private val createAccountViewModel by lazy {
-        CreateAccountViewModel(
-            navController,
-            auth,
-            sessionAuth,
-            cloudDB
-        )
+        CreateAccountViewModel(navController, auth, sessionAuth, cloudDB)
     }
     private val loginViewModel by lazy {
-        LoginViewModel(
-            navController,
-            auth,
-            sessionAuth
-        )
+        LoginViewModel(navController, auth, sessionAuth)
     }
     private val welcomeViewModel by lazy {
-        WelcomeViewModel(
-            navController,
-            sessionAuth
-        )
+        WelcomeViewModel(navController, sessionAuth)
+    }
+
+    private val syncDatabaseViewModel by lazy {
+        SyncDatabaseViewModel(auth, localdb, cloudDB, navController, sessionAuth)
     }
 
     @Composable
@@ -114,40 +93,21 @@ class CallScaffold(
             Routes.CreateAccount.route -> createAccountViewModel
             Routes.LoginScreen.route -> loginViewModel
             Routes.WelcomeScreen.route -> welcomeViewModel
+            Routes.SyncDatabaseScreen.route -> syncDatabaseViewModel
             else -> throw IllegalArgumentException(" Não foi encontrada a tela $screen")
         }
         Scaffold(
             topBar = { CustomTopAppBar(screen = screen, viewModel = viewModel) })
         { padding ->
             when (screen) {
-                Routes.TaskAdd.route -> TaskAdd(
-                    padding,
-                    taskAddViewModel
-                )
+                Routes.TaskAdd.route -> TaskAdd(padding, taskAddViewModel)
+                Routes.TaskEdit.route -> TaskEdit(padding, taskEditViewModel)
+                Routes.TaskList.route -> TaskList(padding, navController, taskListViewModel, localTaskData)
 
-                Routes.TaskEdit.route -> TaskEdit(
-                    padding,
-                    taskEditViewModel
-                )
-
-                Routes.TaskList.route -> TaskList(
-                    padding,
-                    navController,
-                    taskListViewModel,
-                    localTaskData
-                )
-
-                Routes.CreateAccount.route -> CreateAccountScreen(
-                    createAccountViewModel
-                )
-
-                Routes.LoginScreen.route -> LoginScreen(
-                    loginViewModel
-                )
-
-                Routes.WelcomeScreen.route -> WelcomeScreen(
-                    welcomeViewModel
-                )
+                Routes.CreateAccount.route -> CreateAccountScreen(createAccountViewModel)
+                Routes.LoginScreen.route -> LoginScreen(loginViewModel)
+                Routes.WelcomeScreen.route -> WelcomeScreen(welcomeViewModel)
+                Routes.SyncDatabaseScreen.route -> SyncDatabaseScreen(padding, syncDatabaseViewModel)
             }
         }
         return PaddingValues()

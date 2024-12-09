@@ -53,16 +53,16 @@ class LoginViewModel(
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnFailureListener { exception ->
                         setMsgError(when (exception) {
-                                is FirebaseAuthInvalidCredentialsException -> Constants.DATABASE.FIREBASE.INVALIDCREDENTIALSEXCEPTION
-                                else -> Constants.DATABASE.FIREBASE.GENERICERROR
+                                is FirebaseAuthInvalidCredentialsException -> Constants.DATABASE.FIREBASE.EXCEPTIONS.INVALIDCREDENTIALSEXCEPTION
+                                else -> Constants.DATABASE.FIREBASE.EXCEPTIONS.GENERICERROR
                             })
                     }
                     .addOnSuccessListener {
-                        val destination = Routes.TaskList.route
+                        val destination = Routes.SyncDatabaseScreen.route
                         sessionAuth.saveAuthenticationStage(destination)
                         navController.navigate(destination)
                     }
             }
-        } else setMsgError(Constants.DATABASE.FIREBASE.MISSINGEMAILORPASSWORD)
+        } else setMsgError(Constants.DATABASE.FIREBASE.EXCEPTIONS.MISSINGEMAILORPASSWORD)
     }
 }
