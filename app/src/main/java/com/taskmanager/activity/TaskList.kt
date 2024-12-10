@@ -1,17 +1,28 @@
 package com.taskmanager.activity
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateValue
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,17 +39,22 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -59,7 +75,7 @@ import com.taskmanager.base.Routes
 import com.taskmanager.data.LocalTaskData
 import com.taskmanager.data.TaskEntity
 
-@OptIn(ExperimentalFoundationApi::class)
+@SuppressLint("UnusedContentLambdaTargetStateParameter")
 @Composable
 fun TaskList(
     padding: PaddingValues,
@@ -113,48 +129,111 @@ fun TaskList(
             .fillMaxWidth()
     ) {
         if (showAlertDialog) {
-            AlertDialog(onDismissRequest = { listViewModel.setShowAlertDialog(false) },
+            AlertDialog(
                 confirmButton = {
-                    Button(onClick = {
-                        listViewModel.deleteTask(selectItem)
-                    }) {
+                    Button(
+                        onClick = {
+                            listViewModel.deleteTask(selectItem)
+                        },
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = fabBorderAnimeteColor.value,
+                            contentColor = Color.White
+                        )
+                    ) {
                         Text(text = Constants.ALERTDIALOG.YES)
                     }
                 },
                 dismissButton = {
-                    Button(onClick = { listViewModel.setShowAlertDialog(false) }) {
+                    OutlinedButton(
+                        onClick = { listViewModel.setShowAlertDialog(false) },
+                        border = BorderStroke(2.dp, Color.Gray),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+                        )
+                    ) {
                         Text(text = Constants.ALERTDIALOG.NO)
                     }
                 },
-                text = { Text(text = Constants.ALERTDIALOG.CONFIRMAREXCLUSAO) }
+                onDismissRequest = { listViewModel.setShowAlertDialog(false) },
+                text = { Text(text = Constants.ALERTDIALOG.CONFIRMAREXCLUSAO) },
+                shape = RoundedCornerShape(10.dp),
+                title = { Text("Confirmar exclusão") }
             )
         }
         if (tasks.isNotEmpty()) {
             if (isListIconSelected) {
-                LazyColumn {
-                    tasks.forEach { task ->
-                        item {
-                            CardComponent(
-                                borderProgress,
-                                localTaskData,
-                                task,
-                                navController,
-                                listViewModel
+                var status by remember { mutableStateOf(tasks.first()) }
+                AnimatedContent(
+                    targetState = status,
+                    label = "",
+                    transitionSpec = {
+                        (slideInHorizontally(
+                            spring(
+                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                stiffness = Spring.StiffnessVeryLow
                             )
+                        ) + fadeIn(tween(100)))
+                            .togetherWith(slideOutHorizontally(
+                                spring(
+                                    dampingRatio = Spring.DampingRatioNoBouncy,
+                                    stiffness = Spring.StiffnessHigh
+                                )
+                            ) + fadeOut(tween(100)))
+                    },
+                    contentAlignment = Alignment.TopCenter, modifier = Modifier.fillMaxSize()
+                ) {
+                    LazyColumn {
+                        tasks.forEach { task ->
+                            item {
+                                status = task
+
+                                CardComponent(
+                                    borderProgress,
+                                    localTaskData,
+                                    task,
+                                    navController,
+                                    listViewModel
+                                )
+                            }
                         }
                     }
                 }
             } else {
-                LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-                    tasks.forEach { task ->
-                        item {
-                            CardComponent(
-                                borderProgress,
-                                localTaskData,
-                                task,
-                                navController,
-                                listViewModel
+                var status by remember { mutableStateOf(tasks.first()) }
+                AnimatedContent(
+                    targetState = status,
+                    label = "",
+                    transitionSpec = {
+                        (slideInHorizontally(
+                            spring(
+                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                stiffness = Spring.StiffnessVeryLow
                             )
+                        ) + fadeIn(tween(100)))
+                            .togetherWith(slideOutHorizontally(
+                                spring(
+                                    dampingRatio = Spring.DampingRatioNoBouncy,
+                                    stiffness = Spring.StiffnessHigh
+                                )
+                            ) + fadeOut(tween(100)))
+                    },
+                    contentAlignment = Alignment.TopCenter, modifier = Modifier.fillMaxSize()
+                ) {
+                    LazyVerticalGrid(columns = GridCells.Fixed(2)) {
+                        tasks.forEach { task ->
+                            item {
+                                status = task
+                                CardComponent(
+                                    borderProgress,
+                                    localTaskData,
+                                    task,
+                                    navController,
+                                    listViewModel
+                                )
+                            }
                         }
                     }
                 }
