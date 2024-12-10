@@ -1,6 +1,7 @@
 package com.taskmanager.activity.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -8,8 +9,10 @@ import com.taskmanager.base.Routes
 import com.taskmanager.data.SessionAuth
 import com.taskmanager.data.TaskDatabase
 import com.taskmanager.data.downloadDataFromFirestore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class SyncDatabaseViewModel(
     private val auth: FirebaseAuth,
@@ -27,8 +30,10 @@ class SyncDatabaseViewModel(
     }
 
     fun navigateToTaskList() {
-        sessionAuth.saveAuthenticationStage(Routes.TaskList.route)
-        navController.navigate(Routes.TaskList.route)
+        viewModelScope.launch(Dispatchers.Main) {
+            sessionAuth.saveAuthenticationStage(Routes.TaskList.route)
+            navController.navigate(Routes.TaskList.route)
+        }
     }
 
     suspend fun syncDataWithFirebase() {
