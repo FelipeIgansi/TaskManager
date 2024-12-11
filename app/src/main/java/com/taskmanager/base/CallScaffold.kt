@@ -120,7 +120,16 @@ class CallScaffold(
             else -> throw IllegalArgumentException(" Não foi encontrada a tela $screen")
         }
         Scaffold(
-            topBar = { CustomTopAppBar(screen = screen, viewModel = viewModel) })
+            topBar = {
+                when(screen){
+                    Routes.TaskAdd.route,
+                    Routes.TaskEdit.route,
+                    Routes.TaskList.route -> {
+                        CustomTopAppBar(screen = screen, viewModel = viewModel)
+                    }
+                }
+            }
+        )
         { padding ->
             when (screen) {
                 Routes.TaskAdd.route -> TaskAdd(
@@ -164,7 +173,6 @@ class CallScaffold(
             Routes.TaskAdd.route -> Constants.TOPAPPBARHEADER.CREATETASKTEXT
             Routes.TaskEdit.route -> Constants.TOPAPPBARHEADER.EDITTASKTEXT
             Routes.TaskList.route -> Constants.TOPAPPBARHEADER.LISTTASKTEXT
-            Routes.TaskDetail.route -> Constants.TOPAPPBARHEADER.DETAILTASKTEXT
             else -> ""
         }
         LaunchedEffect(Unit) {
