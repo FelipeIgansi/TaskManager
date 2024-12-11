@@ -15,10 +15,10 @@ class Constants {
         const val LOGIN = "Login"
     }
     object WELCOMESCREEN{
-        const val WELCOMETEXT = "Bem vindo(a)!"
-        const val PHRASE = "Tenha todas as suas notas em um só lugar!"
+        const val WELCOMETEXT = "Bem vindo(a) ao Task Manager!"
+        const val PHRASE = "O melhor app de notas!"
         const val REGISTER = "Cadastrar"
-        const val LOGIN = "Logar"
+        const val LOGIN = "Entrar"
     }
 
     object ALERTDIALOG {
@@ -29,7 +29,6 @@ class Constants {
 
     object TOPAPPBARHEADER {
         const val EDITTASKTEXT = "Edição da nota"
-        const val DETAILTASKTEXT = "Detalhes da nota"
         const val CREATETASKTEXT = "Criação de notas"
         const val LISTTASKTEXT = "Minhas notas"
     }
