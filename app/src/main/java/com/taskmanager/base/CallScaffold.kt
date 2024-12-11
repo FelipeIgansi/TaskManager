@@ -48,7 +48,6 @@ import com.taskmanager.activity.viewmodel.LoginViewModel
 import com.taskmanager.activity.viewmodel.TaskAddViewModel
 import com.taskmanager.activity.viewmodel.TaskEditViewModel
 import com.taskmanager.activity.viewmodel.TaskListViewModel
-import com.taskmanager.activity.viewmodel.WelcomeViewModel
 import com.taskmanager.data.LocalTaskData
 import com.taskmanager.data.SessionAuth
 import com.taskmanager.data.TaskDatabase
@@ -64,83 +63,60 @@ class CallScaffold(
 ) {
     private val taskAddViewModel by lazy {
         TaskAddViewModel(
-            navController,
-            localdb,
-            cloudDB,
-            auth
+            navController, localdb, cloudDB, auth
         )
     }
     private val taskEditViewModel by lazy {
         TaskEditViewModel(
-            navController,
-            localTaskData,
-            localdb,
-            cloudDB,
-            auth
+            navController, localTaskData, localdb, cloudDB, auth
         )
     }
     private val taskListViewModel by lazy {
         TaskListViewModel(
-            localdb,
-            auth,
-            cloudDB
+            localdb, auth, cloudDB
         )
     }
     private val createAccountViewModel by lazy {
         CreateAccountViewModel(
-            navController,
-            auth,
-            sessionAuth,
-            cloudDB
+            navController, auth, sessionAuth, cloudDB
         )
     }
     private val loginViewModel by lazy {
         LoginViewModel(
-            navController,
-            auth,
-            sessionAuth
-        )
-    }
-    private val welcomeViewModel by lazy {
-        WelcomeViewModel(
-            navController,
-            sessionAuth
+            navController, auth, sessionAuth
         )
     }
 
     @Composable
     fun buildScreen(screen: String): PaddingValues {
-        val viewModel = when (screen) {
-            Routes.TaskAdd.route -> taskAddViewModel
-            Routes.TaskEdit.route -> taskEditViewModel
-            Routes.TaskList.route -> taskListViewModel
-            Routes.CreateAccount.route -> createAccountViewModel
-            Routes.LoginScreen.route -> loginViewModel
-            Routes.WelcomeScreen.route -> welcomeViewModel
-            else -> throw IllegalArgumentException(" Não foi encontrada a tela $screen")
-        }
         Scaffold(
             topBar = {
-                when(screen){
+                when (screen) {
                     Routes.TaskAdd.route,
-                    Routes.TaskEdit.route,
-                    Routes.TaskList.route -> {
-                        CustomTopAppBar(screen = screen, viewModel = viewModel)
+                    Routes.TaskEdit.route -> {
+                        ManipulationTaskTopAppBar(
+                            screen = screen, viewModel = when (screen) {
+                                Routes.TaskAdd.route -> taskAddViewModel
+                                Routes.TaskEdit.route -> taskEditViewModel
+                                else -> throw IllegalArgumentException(" Não foi encontrada a tela $screen")
+                            }
+                        )
                     }
+
+                    Routes.TaskList.route -> ListTasksTopAppBar()
+
+                    Routes.LoginScreen.route,
+                    Routes.CreateAccount.route -> AuthenticationTopAppBar(screen)
                 }
             }
         )
         { padding ->
             when (screen) {
-                Routes.TaskAdd.route -> TaskAdd(
-                    padding,
-                    taskAddViewModel
-                )
-
-                Routes.TaskEdit.route -> TaskEdit(
-                    padding,
-                    taskEditViewModel
-                )
+                Routes.TaskAdd.route -> TaskAdd(padding, taskAddViewModel)
+                Routes.TaskEdit.route -> TaskEdit(padding, taskEditViewModel)
+                Routes.CreateAccount.route -> CreateAccountScreen(createAccountViewModel)
+                Routes.LoginScreen.route -> LoginScreen(loginViewModel)
+                Routes.WelcomeScreen.route -> WelcomeScreen(navController)
 
                 Routes.TaskList.route -> TaskList(
                     padding,
@@ -148,33 +124,50 @@ class CallScaffold(
                     taskListViewModel,
                     localTaskData
                 )
-
-                Routes.CreateAccount.route -> CreateAccountScreen(
-                    createAccountViewModel
-                )
-
-                Routes.LoginScreen.route -> LoginScreen(
-                    loginViewModel
-                )
-
-                Routes.WelcomeScreen.route -> WelcomeScreen(
-                    welcomeViewModel
-                )
             }
         }
         return PaddingValues()
     }
 
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun CustomTopAppBar(screen: String, viewModel: ViewModel) {
+    private fun ListTasksTopAppBar() {
+        var displayedText by remember { mutableStateOf("") }
+        val title = Constants.TOPAPPBARHEADER.LISTTASKTEXT
+        LaunchedEffect(Unit) {
+            title.forEach { c ->
+                displayedText += c.toString()
+                delay(120L)
+            }
+        }
+
+        CenterAlignedTopAppBar(
+            title = { Text(text = displayedText) },
+            actions = { ButtonLogout(Routes.WelcomeScreen.route) },
+            navigationIcon = {
+                val isListIconCliecked by taskListViewModel.isListIconSelected.collectAsState()
+                ListOptions(
+                    onListIconCLicked = { newValue ->
+                        taskListViewModel.setIsListIconSelected(newValue)
+                    },
+                    isListSelected = isListIconCliecked,
+                )
+            }
+        )
+    }
+
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun ManipulationTaskTopAppBar(screen: String, viewModel: ViewModel?) {
         var displayedText by remember { mutableStateOf("") }
         val title = when (screen) {
             Routes.TaskAdd.route -> Constants.TOPAPPBARHEADER.CREATETASKTEXT
             Routes.TaskEdit.route -> Constants.TOPAPPBARHEADER.EDITTASKTEXT
-            Routes.TaskList.route -> Constants.TOPAPPBARHEADER.LISTTASKTEXT
             else -> ""
         }
+
         LaunchedEffect(Unit) {
             title.forEach { c ->
                 displayedText += c.toString()
@@ -194,33 +187,39 @@ class CallScaffold(
                     is TaskEditViewModel -> ButtonSave(
                         onSaveClick = { taskEditViewModel.setSaveRequest(true) }
                     )
-
-                    is TaskListViewModel -> ButtonLogout(Routes.WelcomeScreen.route)
                 }
             },
             navigationIcon = {
-                val isListIconCliecked by taskListViewModel.isListIconSelected.collectAsState()
-                when (viewModel) {
-                    is TaskAddViewModel,
-                    is TaskEditViewModel,
-                    is CreateAccountViewModel,
-                    is LoginViewModel -> {
+                when (screen) {
+                    Routes.TaskAdd.route,
+                    Routes.TaskEdit.route -> {
                         IconButton(onClick = { navController.navigateUp() }) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                         }
-                    }
-                    is TaskListViewModel -> {
-                        ListOptions(
-                            onListIconCLicked = { newValue ->
-                                taskListViewModel.setIsListIconSelected(newValue)
-                            },
-                            isListSelected = isListIconCliecked,
-                        )
                     }
                 }
             }
         )
     }
+
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun AuthenticationTopAppBar(screen: String) {
+        CenterAlignedTopAppBar(
+            title = { Text(text = "") },
+            navigationIcon = {
+                when (screen) {
+                    Routes.CreateAccount.route, Routes.LoginScreen.route -> {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                        }
+                    }
+                }
+            }
+        )
+    }
+
 
     @Composable
     private fun ListOptions(onListIconCLicked: (Boolean) -> Unit, isListSelected: Boolean) {

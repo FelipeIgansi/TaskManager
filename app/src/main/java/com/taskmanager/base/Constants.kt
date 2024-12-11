@@ -9,7 +9,7 @@ class Constants {
     }
     object AUTHENTICATION{
         const val KEYSESSION = "keySession"
-        const val REGISTER = "Register"
+        const val REGISTER = "Cadastrar"
         const val EMAIL = "E-mail"
         const val PASSWORD ="Password"
         const val LOGIN = "Login"

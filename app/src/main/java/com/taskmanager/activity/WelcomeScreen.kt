@@ -46,14 +46,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.taskmanager.R
-import com.taskmanager.activity.viewmodel.WelcomeViewModel
 import com.taskmanager.base.Constants
 import com.taskmanager.base.Routes
 import kotlinx.coroutines.delay
 
 @Composable
-fun WelcomeScreen(viewModel: WelcomeViewModel) {
+fun WelcomeScreen(navController: NavController) {
 
     val transition = rememberInfiniteTransition(label = "")
 
@@ -131,7 +131,7 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 OutlinedButton(
-                    onClick = { viewModel.navigate(Routes.CreateAccount.route) },
+                    onClick = { navController.navigate(Routes.CreateAccount.route) },
                     shape = RoundedCornerShape(10.dp),
                     border = BorderStroke(width = 3.dp, color = buttonColor.value),
                     colors = ButtonDefaults.buttonColors(
@@ -143,7 +143,7 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Button(
-                    onClick = { viewModel.navigate(Routes.LoginScreen.route) },
+                    onClick = { navController.navigate(Routes.LoginScreen.route) },
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = buttonColor.value,
