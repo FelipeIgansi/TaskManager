@@ -1,5 +1,10 @@
 package com.taskmanager.activity
 
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +35,16 @@ fun LoginScreen(viewModel: LoginViewModel) {
     val email by viewModel.email.collectAsState()
     val password by viewModel.pass.collectAsState()
     val msgErro by viewModel.msgError.collectAsState()
+
+    val transition = rememberInfiniteTransition(label = "")
+    val buttonColor = transition.animateColor(
+        initialValue = Color.Green,
+        targetValue = Color.Yellow,
+        animationSpec = infiniteRepeatable(
+            repeatMode = RepeatMode.Reverse,
+            animation = tween(800)
+        ), label = ""
+    )
 
     Box(
         modifier = Modifier
@@ -76,9 +92,11 @@ fun LoginScreen(viewModel: LoginViewModel) {
                 }
             }
             Button(
-                onClick = { viewModel.loginUser(email, password) }, modifier = Modifier
+                onClick = { viewModel.loginUser(email, password) },
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp)
+                    .padding(10.dp),
+                colors = ButtonDefaults.buttonColors(buttonColor.value)
             ) {
                 Text(text = Constants.AUTHENTICATION.LOGIN)
             }
