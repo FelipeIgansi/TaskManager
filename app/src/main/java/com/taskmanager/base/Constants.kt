@@ -42,6 +42,7 @@ class Constants {
         const val CREATEACCOUNT = "create_screen"
         const val LOGINSCREEN = "login_screen"
         const val WELCOMESCREEN = "welcome_screen"
+        const val SYNCDATABASESCREEN = "sync_screen"
     }
 
     object DATABASE {

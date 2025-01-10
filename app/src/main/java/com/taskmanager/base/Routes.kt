@@ -8,4 +8,5 @@ sealed class Routes (val route: String) {
     data object CreateAccount :Routes(Constants.ROUTES.CREATEACCOUNT)
     data object LoginScreen : Routes(Constants.ROUTES.LOGINSCREEN)
     data object  WelcomeScreen : Routes(Constants.ROUTES.WELCOMESCREEN)
+    data object  SyncDatabaseScreen: Routes(Constants.ROUTES.SYNCDATABASESCREEN)
 }

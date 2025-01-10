@@ -57,6 +57,7 @@ class Navigation {
                 composableScreen(Routes.CreateAccount.route)
                 composableScreen(Routes.LoginScreen.route)
                 composableScreen(Routes.WelcomeScreen.route)
+                composableScreen(Routes.SyncDatabaseScreen.route)
             }
         }
     }

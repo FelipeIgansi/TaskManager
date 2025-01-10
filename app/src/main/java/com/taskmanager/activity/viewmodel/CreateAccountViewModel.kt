@@ -57,9 +57,9 @@ class CreateAccountViewModel(
     fun saveUser(email: String, passoword: String) {
         val name = email.substring(0, email.indexOf("@"))
         val mapUser = UserModel(
-                name = name,
-                email = email
-            )
+            name = name,
+            email = email
+        )
         if (email.isNotEmpty() && passoword.isNotEmpty()) {
             viewModelScope.launch {
                 auth.createUserWithEmailAndPassword(email, passoword)

@@ -22,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.taskmanager.R
 import com.taskmanager.activity.CreateAccountScreen
 import com.taskmanager.activity.LoginScreen
+import com.taskmanager.activity.SyncDatabaseScreen
 import com.taskmanager.activity.TaskAdd
 import com.taskmanager.activity.TaskDetail
 import com.taskmanager.activity.TaskEdit
@@ -29,6 +30,7 @@ import com.taskmanager.activity.TaskList
 import com.taskmanager.activity.WelcomeScreen
 import com.taskmanager.activity.viewmodel.CreateAccountViewModel
 import com.taskmanager.activity.viewmodel.LoginViewModel
+import com.taskmanager.activity.viewmodel.SyncDatabaseViewModel
 import com.taskmanager.activity.viewmodel.TaskAddViewModel
 import com.taskmanager.activity.viewmodel.TaskDetailViewModel
 import com.taskmanager.activity.viewmodel.TaskEditViewModel
@@ -54,6 +56,7 @@ class CallScaffold(
     private val createAccountViewModel by lazy { CreateAccountViewModel(navController, auth, sessionAuth, cloudDB) }
     private val loginViewModel by lazy { LoginViewModel(navController, auth, sessionAuth) }
     private val welcomeViewModel by lazy { WelcomeViewModel(navController, sessionAuth) }
+    private val syncDatabaseViewModel by lazy { SyncDatabaseViewModel(cloudDB, auth, localdb, sessionAuth, navController) }
 
     @Composable
     fun buildScreen(screen: String): PaddingValues {
@@ -65,6 +68,7 @@ class CallScaffold(
             Routes.CreateAccount.route -> createAccountViewModel
             Routes.LoginScreen.route -> loginViewModel
             Routes.WelcomeScreen.route -> welcomeViewModel
+            Routes.SyncDatabaseScreen.route -> syncDatabaseViewModel
             else -> throw IllegalArgumentException(" Não foi encontrada a tela $screen")
         }
         Scaffold(topBar = { CustomTopAppBar(screen = screen, viewModel = viewModel) }) { padding ->
@@ -76,6 +80,7 @@ class CallScaffold(
                 Routes.CreateAccount.route -> CreateAccountScreen(createAccountViewModel)
                 Routes.LoginScreen.route -> LoginScreen(loginViewModel)
                 Routes.WelcomeScreen.route -> WelcomeScreen(welcomeViewModel)
+                Routes.SyncDatabaseScreen.route -> SyncDatabaseScreen(padding,syncDatabaseViewModel)
             }
         }
         return PaddingValues()

@@ -58,7 +58,7 @@ class LoginViewModel(
                             })
                     }
                     .addOnSuccessListener {
-                        val destination = Routes.TaskList.route
+                        val destination = Routes.SyncDatabaseScreen.route
                         sessionAuth.saveAuthenticationStage(destination)
                         navController.navigate(destination)
                     }
