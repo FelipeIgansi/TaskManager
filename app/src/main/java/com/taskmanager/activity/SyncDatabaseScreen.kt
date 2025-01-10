@@ -1,16 +1,11 @@
 package com.taskmanager.activity
 
-import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,35 +13,45 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.taskmanager.activity.viewmodel.SyncDatabaseViewModel
-import com.taskmanager.theme.DarkGreen
-import kotlinx.coroutines.delay
+import com.taskmanager.base.SyncState
 
 @Composable
 fun SyncDatabaseScreen(padding: PaddingValues, viewModel: SyncDatabaseViewModel) {
-    val isDataSynchronized by viewModel.isDataSynchronized.collectAsState()
+    val syncState by viewModel.syncState.collectAsState()
 
-    LaunchedEffect(Unit) { viewModel.syncDataWithFirebase() }
-    LaunchedEffect(isDataSynchronized) {
-        delay(1000)
-        viewModel.navigateToTaskList()
+    LaunchedEffect(Unit) {
+        viewModel.syncDataWithFirebase()
     }
-    val transition = rememberInfiniteTransition(label = "")
-    val color = transition.animateColor(
-        label = "",
-        initialValue = Color.Green,
-        targetValue = DarkGreen,
-        animationSpec = infiniteRepeatable(
-            repeatMode = RepeatMode.Reverse,
-            animation = tween(300, easing = FastOutSlowInEasing)
-        )
-    )
+
+    when (syncState) {
+        SyncState.LOADING -> LoadingProgressIndicator(padding)
+        SyncState.SUCCESS -> viewModel.moveForward()
+        SyncState.ERROR -> ErrorText(padding)
+    }
+}
+
+@Composable
+private fun LoadingProgressIndicator(padding: PaddingValues){
     Box(
-        modifier = Modifier
+        Modifier
             .padding(padding)
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
+            .fillMaxSize(), contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(color = color.value)
+        CircularProgressIndicator(
+            color = Color.Red,
+            strokeWidth = 5.dp,
+            trackColor = Color.Gray
+        )
+    }
+}
+
+@Composable
+private fun ErrorText(padding: PaddingValues){
+    Box(Modifier.padding(padding)
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center) {
+        Text("Erro ao tentar sincronizar dados. Tente novamente!")
     }
 }

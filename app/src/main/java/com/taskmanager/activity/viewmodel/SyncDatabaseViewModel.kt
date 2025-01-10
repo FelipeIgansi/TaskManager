@@ -1,48 +1,42 @@
 package com.taskmanager.activity.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.taskmanager.base.Routes
+import com.taskmanager.base.SyncState
 import com.taskmanager.data.SessionAuth
-import com.taskmanager.data.TaskDatabase
-import com.taskmanager.data.downloadDataFromFirestore
-import kotlinx.coroutines.Dispatchers
+import com.taskmanager.data.TaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class SyncDatabaseViewModel(
-    private val auth: FirebaseAuth,
-    private val localDB: TaskDatabase,
-    private val cloudDB: FirebaseFirestore,
+    private val sessionAuth: SessionAuth,
     private val navController: NavController,
-    private val sessionAuth: SessionAuth
+    private val taskRepository: TaskRepository
 ) : ViewModel() {
 
-    private var _isDataSynchronized = MutableStateFlow(false)
-    val isDataSynchronized: StateFlow<Boolean> = _isDataSynchronized
+    private var _syncState = MutableStateFlow(SyncState.LOADING)
+    val syncState: StateFlow<SyncState> = _syncState
 
-    private fun setIsDataSynchronized(value: Boolean) {
-        _isDataSynchronized.value = value
+    fun moveForward() {
+        val destination = Routes.TaskList.route
+        sessionAuth.saveAuthenticationStage(destination)
+        navController.navigate(destination)
     }
 
-    fun navigateToTaskList() {
-        viewModelScope.launch(Dispatchers.Main) {
-            sessionAuth.saveAuthenticationStage(Routes.TaskList.route)
-            navController.navigate(Routes.TaskList.route)
+    fun syncDataWithFirebase() {
+        _syncState.value = SyncState.LOADING
+        try {
+            viewModelScope.launch {
+                taskRepository.syncDataWithFirebase()
+            }
+            _syncState.value = SyncState.SUCCESS
+        } catch (e: Exception) {
+            Log.w("syncDataWithFirebase", "Ocorreu o seguinte erro: ${e.message}")
+            _syncState.value = SyncState.ERROR
         }
-    }
-
-    suspend fun syncDataWithFirebase() {
-        setIsDataSynchronized(
-            downloadDataFromFirestore(
-                auth = auth,
-                localDB = localDB,
-                cloudDB = cloudDB
-            )
-        )
     }
 }

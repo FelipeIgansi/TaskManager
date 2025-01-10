@@ -57,7 +57,7 @@ class TaskListViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val querySnapshot = cloudDB.collection(Constants.DATABASE.FIREBASE.TASKDATABASENAME)
-                    .whereEqualTo("uuid", uuid)
+                    .whereEqualTo(Constants.DATABASE.TITLECOLUMN, task.title)
                     .get()
                     .await()
 
