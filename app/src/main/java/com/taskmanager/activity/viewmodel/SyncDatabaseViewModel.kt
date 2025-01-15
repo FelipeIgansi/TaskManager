@@ -1,55 +1,42 @@
 package com.taskmanager.activity.viewmodel
 
+    import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.taskmanager.activity.TaskModel
 import com.taskmanager.base.Routes
+import com.taskmanager.base.SyncState
 import com.taskmanager.data.SessionAuth
-import com.taskmanager.data.TaskDatabase
-import com.taskmanager.data.TaskEntity
+import com.taskmanager.data.TaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.launch
 
 class SyncDatabaseViewModel(
-    private val cloudDB: FirebaseFirestore,
-    private val auth: FirebaseAuth,
-    private val localDB: TaskDatabase,
     private val sessionAuth: SessionAuth,
-    private val navController: NavController
+    private val navController: NavController,
+    private val taskRepository: TaskRepository
 ) : ViewModel() {
 
-    private var _isDataSyncronized = MutableStateFlow(false)
-    val isDataSyncronized: StateFlow<Boolean> = _isDataSyncronized
+    private var _syncState = MutableStateFlow(SyncState.LOADING)
+    val syncState: StateFlow<SyncState> = _syncState
 
-    fun moveForward(){
+    fun moveForward() {
         val destination = Routes.TaskList.route
         sessionAuth.saveAuthenticationStage(destination)
         navController.navigate(destination)
     }
 
-    suspend fun syncDataWithFirebase() {
-        val uid = auth.currentUser?.uid
-        val documentSnapshots = cloudDB.collection("tasks")
-            .whereEqualTo("uuid", uid)
-            .get()
-            .await()
-
-        if (!documentSnapshots.isEmpty) {
-            documentSnapshots.documents.forEach { doc ->
-                val taskModel = doc.toObject(TaskModel::class.java) ?: TaskModel()
-                localDB.taskdao().insertAll(
-                    TaskEntity(
-                        id = 0,
-                        title = taskModel.title,
-                        content = taskModel.content,
-                        fkIDUser = uid
-                    )
-                )
+    fun syncDataWithFirebase() {
+        _syncState.value = SyncState.LOADING
+        try {
+            viewModelScope.launch{
+                taskRepository.syncDataWithFirebas()
             }
-            _isDataSyncronized.value = true
+            _syncState.value = SyncState.SUCCSESS
+        } catch (e: Exception) {
+            Log.w("syncDataWithFirebase", "Ocorreu o seguinte erro ${e.message} ")
+            _syncState.value = SyncState.ERROR
         }
     }
 }

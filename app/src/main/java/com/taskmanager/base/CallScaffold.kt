@@ -39,6 +39,7 @@ import com.taskmanager.activity.viewmodel.WelcomeViewModel
 import com.taskmanager.data.LocalTaskData
 import com.taskmanager.data.SessionAuth
 import com.taskmanager.data.TaskDatabase
+import com.taskmanager.data.TaskRepository
 import com.taskmanager.theme.DarkGreen
 
 class CallScaffold(
@@ -47,7 +48,8 @@ class CallScaffold(
     private val localdb: TaskDatabase,
     private val auth: FirebaseAuth,
     private val sessionAuth: SessionAuth,
-    private val cloudDB: FirebaseFirestore
+    private val cloudDB: FirebaseFirestore,
+    private val taskRepository: TaskRepository
 ) {
     private val taskAddViewModel by lazy { TaskAddViewModel(navController, localdb, cloudDB, auth) }
     private val taskEditViewModel by lazy { TaskEditViewModel(navController, localTaskData, localdb, cloudDB, auth) }
@@ -56,7 +58,7 @@ class CallScaffold(
     private val createAccountViewModel by lazy { CreateAccountViewModel(navController, auth, sessionAuth, cloudDB) }
     private val loginViewModel by lazy { LoginViewModel(navController, auth, sessionAuth) }
     private val welcomeViewModel by lazy { WelcomeViewModel(navController, sessionAuth) }
-    private val syncDatabaseViewModel by lazy { SyncDatabaseViewModel(cloudDB, auth, localdb, sessionAuth, navController) }
+    private val syncDatabaseViewModel by lazy { SyncDatabaseViewModel(sessionAuth, navController, taskRepository) }
 
     @Composable
     fun buildScreen(screen: String): PaddingValues {
