@@ -5,15 +5,17 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.taskmanager.base.Constants
 import com.taskmanager.activity.viewmodel.TaskAddViewModel
+import com.taskmanager.base.Constants
 
 
 @Composable
@@ -34,18 +36,26 @@ fun TaskAdd(
             .padding(top = 20.dp, start = 10.dp, end = 10.dp)
     ) {
         OutlinedTextField(
-            value = title?:"",
-            onValueChange = {taskAddViewModel.setTitle(it)},
-            label = { Text(Constants.TITLE) },
-            modifier = Modifier.fillMaxWidth()
+            value = title ?: "",
+            onValueChange = { taskAddViewModel.setTitle(it) },
+            placeholder = { Text(Constants.TITLE) },
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent
+            )
         )
         OutlinedTextField(
-            value = content?:"",
-            onValueChange = { taskAddViewModel.setContent(it)},
-            label = { Text(Constants.DESCRIPTION) },
+            value = content ?: "",
+            onValueChange = { taskAddViewModel.setContent(it) },
+            placeholder = { Text(Constants.DESCRIPTION) },
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .weight(1f),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent
+            )
         )
 
     }
